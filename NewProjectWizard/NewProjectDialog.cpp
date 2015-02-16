@@ -1,6 +1,6 @@
 #include "NewProjectDialog.h"
 #include "ui_NewProjectDialog.h"
-
+#include <QFileDialog>
 #include <QDebug>
 
 
@@ -12,6 +12,12 @@ NewProjectDialog::NewProjectDialog(QWidget *parent) :
 
     connect(ui->buttonBox,SIGNAL(accepted()),this,SLOT(onAccepted()));
     connect(ui->buttonBox,SIGNAL(rejected()),this,SLOT(reject()));
+    connect(ui->selectPathButton,&QPushButton::clicked,[=](){
+        QString path = QFileDialog::getExistingDirectory(this,tr("选择目录"),".");
+        if(!path.isEmpty()){
+            ui->projectPath->setText(path);
+        }
+    });
 
 }
 

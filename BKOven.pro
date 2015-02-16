@@ -4,5 +4,5 @@ SUBDIRS += \
     ParserHelper \
     BKOven \
     NewProjectWizard \
+    SozaiImportWizard \
     Test \
-    SozaiImportWizard

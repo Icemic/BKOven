@@ -5,20 +5,24 @@
 #include <QDir>
 #include <QDebug>
 
-namespace NewProjectWizard {
 
-//测试
-void test()
+QString NewProjectWizard::_projectFilePath = "";
+
+NewProjectWizard::NewProjectWizard()
 {
 
-    qDebug() << "ok!" << endl;
-    NewProjectDialog* dialog = new NewProjectDialog;
+}
 
+//测试
+void NewProjectWizard::test()
+{
+
+    qDebug() << "NewProjectWizard: ok!" << endl;
 
 }
 
 //启动新建工程对话框，并创建工程
-bool open()
+bool NewProjectWizard::open()
 {
     NewProjectDialog* dialog = new NewProjectDialog;
     if (dialog->exec())
@@ -70,11 +74,8 @@ bool open()
 }
 
 //获得工程文件 myGame.bk 的路径
-QString projectFilePath()
+QString NewProjectWizard::projectFilePath()
 {
     return _projectFilePath;
 }
 
-
-
-}// namespace end

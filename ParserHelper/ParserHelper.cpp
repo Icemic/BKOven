@@ -450,6 +450,23 @@ QBkeVariableRef &QBkeVariableRef::operator =(const QBkeVariable &r)
     return *this;
 }
 
+QBkeVariableRef &QBkeVariableRef::operator -(const QBkeVariable &r)
+{
+    if(_var){
+        QBkeVariableRef t = *this;
+        return t -= *r._var;
+    }
+    else
+        return *this;
+}
+
+QBkeVariableRef &QBkeVariableRef::operator -=(const QBkeVariable &r)
+{
+    if(_var)
+        *_var - *r._var;
+    return *this;
+}
+
 void QBkeVariableRef::append(const QBkeVariable &v)
 {
     if(_var)
@@ -479,6 +496,23 @@ QBkeVariableRef &QBkeVariableRef::operator =(const QBkeVariableRef &r)
 {
     if(_var)
         *_var = *r._var;
+    return *this;
+}
+
+QBkeVariableRef &QBkeVariableRef::operator -(const QBkeVariableRef &r)
+{
+    if(_var){
+        QBkeVariableRef t = *this;
+        return t -= *r._var;
+    }
+    else
+        return *this;
+}
+
+QBkeVariableRef &QBkeVariableRef::operator -=(const QBkeVariableRef &r)
+{
+    if(_var)
+        *_var - *r._var;
     return *this;
 }
 
@@ -541,6 +575,30 @@ QBkeVariable &QBkeVariable::operator =(const QBkeVariable &v)
 QBkeVariable &QBkeVariable::operator =(const QBkeVariableRef &v)
 {
     *_var = *v._var;
+    return *this;
+}
+
+QBkeVariable &QBkeVariable::operator -(const QBkeVariable &v)
+{
+    QBkeVariable t = *this;
+    return t -= *v._var;
+}
+
+QBkeVariable &QBkeVariable::operator -(const QBkeVariableRef &v)
+{
+    QBkeVariable t = *this;
+    return t -= *v._var;
+}
+
+QBkeVariable &QBkeVariable::operator -=(const QBkeVariable &v)
+{
+    *_var -= *v._var;
+    return *this;
+}
+
+QBkeVariable &QBkeVariable::operator -=(const QBkeVariableRef &v)
+{
+    *_var -= *v._var;
     return *this;
 }
 

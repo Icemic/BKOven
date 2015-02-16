@@ -36,6 +36,10 @@ public:
     bool operator == (const QBkeVariableRef &r) const;
     QBkeVariableRef &operator = (const QBkeVariableRef &r);
     QBkeVariableRef &operator = (const QBkeVariable &r);
+    QBkeVariableRef &operator - (const QBkeVariableRef &r);
+    QBkeVariableRef &operator - (const QBkeVariable &r);
+    QBkeVariableRef &operator -= (const QBkeVariableRef &r);
+    QBkeVariableRef &operator -= (const QBkeVariable &r);
     void redirect(QBkeVariable &v);
     void redirect(const QBkeVariableRef &v){_var = v._var;}
 
@@ -98,6 +102,10 @@ public:
     QBkeVariable(const BKE_Variable &v);
     QBkeVariable &operator = (const QBkeVariable &v);
     QBkeVariable &operator = (const QBkeVariableRef &v);
+    QBkeVariable &operator - (const QBkeVariable &v);
+    QBkeVariable &operator - (const QBkeVariableRef &v);
+    QBkeVariable &operator -= (const QBkeVariable &v);
+    QBkeVariable &operator -= (const QBkeVariableRef &v);
     operator BKE_Variable &(){return *_var;}
     bool operator == (const QBkeVariable &r) const;
     const QBkeVariable operator [](int i) const;

@@ -1,12 +1,19 @@
 #ifndef SOZAIIMPORTWIZARD_H
 #define SOZAIIMPORTWIZARD_H
 
+#include <QtCore>
 
-class SozaiImportWizard
-{
+class SozaiImportWizard {
 
 public:
-    SozaiImportWizard();
+    explicit SozaiImportWizard();
+
+    static void test();
+
+    static bool open(const QString &projectPath);
+
 };
+
+
 
 #endif // SOZAIIMPORTWIZARD_H

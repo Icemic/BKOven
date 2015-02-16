@@ -1,7 +1,8 @@
 #include "mainwindow.h"
 #include <QApplication>
 
-#include "../NewProjectWizard/NewProjectWizard.h"
+#include "NewProjectWizard.h"
+#include "SozaiImportWizard.h"
 
 int main(int argc, char *argv[])
 {
@@ -9,7 +10,8 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    NewProjectWizard::open();
+//    NewProjectWizard::open();
+    SozaiImportWizard::open("D:/workspace/Git/BKOven测试/test");
 
     return a.exec();
 }
