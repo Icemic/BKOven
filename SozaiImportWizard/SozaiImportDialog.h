@@ -2,6 +2,7 @@
 #define SOZAIIMPORTDIALOG_H
 
 #include <QDialog>
+#include <QTreeWidget>
 #include "../ParserHelper/ParserHelper.h"
 
 namespace Ui {
@@ -28,6 +29,12 @@ private:
     QBkeVariable doc;
 
     QStringList recursiveSearch(const QString &path, const QString &relativePath, const QStringList &nameFilters);
+
+
+
+    void init_bg();
+
+    QStringList getFileNamesInChildren(QTreeWidgetItem* parent);
 
 private slots:
     void _exportSozaiConfig();  //内部用，按下确定后触发，刷新doc值

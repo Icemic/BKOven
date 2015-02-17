@@ -11,10 +11,12 @@ TEMPLATE = lib
 CONFIG += staticlib
 
 SOURCES += SozaiImportWizard.cpp \
-    SozaiImportDialog.cpp
+    SozaiImportDialog.cpp \
+    SozaiTreeWidget.cpp
 
 HEADERS += SozaiImportWizard.h \
-    SozaiImportDialog.h
+    SozaiImportDialog.h \
+    SozaiTreeWidget.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

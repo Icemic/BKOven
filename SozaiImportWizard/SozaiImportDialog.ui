@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>887</width>
+    <width>1058</width>
     <height>504</height>
    </rect>
   </property>
@@ -84,6 +84,12 @@
        <property name="editTriggers">
         <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
        </property>
+       <property name="dragEnabled">
+        <bool>true</bool>
+       </property>
+       <property name="dragDropMode">
+        <enum>QAbstractItemView::DragOnly</enum>
+       </property>
        <property name="currentRow">
         <number>-1</number>
        </property>
@@ -91,18 +97,37 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QListWidget" name="targetList_bg">
+      <widget class="SozaiTreeWidget" name="targetList_bg">
        <property name="geometry">
         <rect>
          <x>650</x>
          <y>30</y>
-         <width>201</width>
-         <height>391</height>
+         <width>301</width>
+         <height>365</height>
         </rect>
        </property>
-       <property name="sortingEnabled">
+       <property name="acceptDrops">
         <bool>true</bool>
        </property>
+       <property name="dragDropMode">
+        <enum>QAbstractItemView::DropOnly</enum>
+       </property>
+       <property name="defaultDropAction">
+        <enum>Qt::MoveAction</enum>
+       </property>
+       <property name="columnCount">
+        <number>2</number>
+       </property>
+       <column>
+        <property name="text">
+         <string notr="true">1</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string notr="true">2</string>
+        </property>
+       </column>
       </widget>
       <widget class="QPushButton" name="importButton_bg">
        <property name="geometry">
@@ -125,7 +150,7 @@
         <rect>
          <x>599</x>
          <y>220</y>
-         <width>41</width>
+         <width>42</width>
          <height>23</height>
         </rect>
        </property>
@@ -152,6 +177,38 @@
         <string>占位&gt;&gt;</string>
        </property>
       </widget>
+      <widget class="QPushButton" name="addClassButton_bg">
+       <property name="geometry">
+        <rect>
+         <x>650</x>
+         <y>399</y>
+         <width>100</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>添加子分类</string>
+       </property>
+       <property name="default">
+        <bool>false</bool>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="removeClassButton_bg">
+       <property name="geometry">
+        <rect>
+         <x>751</x>
+         <y>399</y>
+         <width>101</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>移除子分类</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
@@ -172,6 +229,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>SozaiTreeWidget</class>
+   <extends>QTreeWidget</extends>
+   <header>SozaiTreeWidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
