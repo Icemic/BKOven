@@ -10,7 +10,6 @@ public:
     explicit SozaiTreeWidget(QWidget *parent = 0);
     ~SozaiTreeWidget();
 
-
 signals:
     void dropped(QTreeWidgetItem* target, const QMap<int,QVariant> & source );
 

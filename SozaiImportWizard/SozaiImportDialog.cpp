@@ -1,5 +1,7 @@
-#include "SozaiImportDialog.h"
+﻿#include "SozaiImportDialog.h"
 #include "ui_SozaiImportDialog.h"
+#include "../shared/vshack.h"
+
 #include <QDir>
 #include <QMessageBox>
 #include <QGraphicsView>
@@ -61,16 +63,19 @@ void SozaiImportDialog::init_bg()
             return;
         }
 
-        QTreeWidgetItem* child = new QTreeWidgetItem(QStringList(tr("新子分类")),1);
+        QTreeWidgetItem* child = new QTreeWidgetItem(1);
         child->setFlags(child->flags() | Qt::ItemIsEditable);
         child->setText(1,tr("拖拽到此处导入素材"));
         child->setTextColor(1,QColor("red"));
 
 
+
         ui->targetList_bg->currentItem()->setText(1,"");
         ui->targetList_bg->currentItem()->addChild(child);
         ui->targetList_bg->currentItem()->setExpanded(true);
+        child->setText(0,tr(""));
         ui->targetList_bg->editItem(child);
+//        this->isEditting = true;
     });
 
     //移除子分类
@@ -113,56 +118,45 @@ void SozaiImportDialog::init_bg()
                                                 .scaled(view->width()-2,view->height()-2,Qt::KeepAspectRatio,Qt::SmoothTransformation));
     });
 
-//    //targetList选中项改变
-//    connect(ui->targetList_bg,&QListWidget::currentItemChanged,[=](QListWidgetItem* item){
-//        if(item->textColor().red()==255)
-//            return;
+    //禁止第二栏编辑
+    connect(ui->targetList_bg,&SozaiTreeWidget::itemDoubleClicked,[this](QTreeWidgetItem* item,int col){
+        if(col==1)
+            ui->targetList_bg->editItem(item,0);
+    });
 
-//        QGraphicsView *view = ui->graphicsView_bg;
-//        view->scene()->clear();
-//        view->scene()->addPixmap(QPixmap(projectDataPath+"background/"+item->data(Qt::UserRole).toString())
-//                                                .scaled(view->width()-2,view->height()-2,Qt::KeepAspectRatio,Qt::SmoothTransformation));
-//    });
+    connect(ui->targetList_bg,&SozaiTreeWidget::itemChanged,[=](QTreeWidgetItem* item,int col){
+        if(item->type()==0)
+            return;
 
-//    //点击导入按钮
-//    connect(ui->importButton_bg,&QPushButton::clicked,[=](){
-//        //判断originList当前row是否合法
-//        if(ui->originList_bg->currentRow()<0 || ui->originList_bg->currentRow() >= ui->originList_bg->count())
-//            return;
+        QTimer::singleShot(0,[=](){
+            //不能为空
+            if(item->text(0).trimmed().isEmpty()){
 
-//        QString fileNamePath = ui->originList_bg->currentItem()->text();
+            }
 
-//        QListWidgetItem *item = new QListWidgetItem(fileNamePath);
-//        item->setFlags(item->flags() | Qt::ItemIsEditable);
-//        item->setData(Qt::UserRole,fileNamePath);                               //真正的路径信息存储在 Qt::UserRole 中, text 为别名。
-//        ui->targetList_bg->addItem(item);
-//        ui->targetList_bg->editItem(item);
-//        ui->originList_bg->takeItem(ui->originList_bg->currentRow());
-//    });
+            //消左右空格
+            if(item->text(0).trimmed()!=item->text(0)){
+                item->setText(0,item->text(0).trimmed());
+                return;
+            }
+            int I = item->parent()->childCount();
+            int i = 0;
+            for(i;i<I;i++){
+                QTreeWidgetItem* item2 = item->parent()->child(i);
+                qDebug() << item2 << item << item2->text(0) << item->text(0) <<endl;
+                if(item2!=item && item2->text(0)==item->text(0)){
+                    QMessageBox::warning(this,"素材导入",tr("同一父分类下的子分类不能重名哦～"));
+                    item->setText(0,"");
+                    ui->targetList_bg->editItem(item,0);
+                }
+            }
+        });
 
-//    //点击移除按钮
-//    connect(ui->removeButton_bg,&QPushButton::clicked,[=](){
-//        //判断targetList当前row是否合法
-//        if(ui->targetList_bg->currentRow()<0 || ui->targetList_bg->currentRow() >= ui->targetList_bg->count())
-//            return;
+    });
 
-//        //若文件并不存在，则不向originList中添加
-//        if(ui->targetList_bg->currentItem()->textColor().red()!=255)    //为红色（==255）表示文件不存在
-//            ui->originList_bg->addItem(ui->targetList_bg->currentItem()->data(Qt::UserRole).toString());
-//        ui->targetList_bg->takeItem(ui->targetList_bg->currentRow());
-//    });
 
-//    //点击占位按钮
-//    connect(ui->addButton_bg,&QPushButton::clicked,[=](){
-//        QListWidgetItem *item = new QListWidgetItem();
-//        item->setFlags(item->flags() | Qt::ItemIsEditable);
-//        item->setData(Qt::UserRole,"");
-//        item->setTextColor(QColor("red"));
-//        ui->targetList_bg->addItem(item);
-//        ui->targetList_bg->editItem(item);
-//    });
+
 }
-
 
 QStringList SozaiImportDialog::getFileNamesInChildren(QTreeWidgetItem *parent)
 {

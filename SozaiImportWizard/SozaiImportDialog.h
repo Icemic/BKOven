@@ -1,4 +1,4 @@
-#ifndef SOZAIIMPORTDIALOG_H
+﻿#ifndef SOZAIIMPORTDIALOG_H
 #define SOZAIIMPORTDIALOG_H
 
 #include <QDialog>
@@ -36,9 +36,10 @@ private:
 
     QStringList getFileNamesInChildren(QTreeWidgetItem* parent);
 
+//    bool isEditting = false;
+
 private slots:
     void _exportSozaiConfig();  //内部用，按下确定后触发，刷新doc值
-
 
 };
 
