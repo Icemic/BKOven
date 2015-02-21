@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1058</width>
+    <width>988</width>
     <height>504</height>
    </rect>
   </property>
@@ -49,9 +49,9 @@
       <widget class="QLabel" name="label_2">
        <property name="geometry">
         <rect>
-         <x>390</x>
+         <x>383</x>
          <y>6</y>
-         <width>61</width>
+         <width>64</width>
          <height>20</height>
         </rect>
        </property>
@@ -62,7 +62,7 @@
       <widget class="QLabel" name="label_3">
        <property name="geometry">
         <rect>
-         <x>650</x>
+         <x>620</x>
          <y>10</y>
          <width>54</width>
          <height>12</height>
@@ -75,9 +75,9 @@
       <widget class="QListWidget" name="originList_bg">
        <property name="geometry">
         <rect>
-         <x>390</x>
+         <x>383</x>
          <y>30</y>
-         <width>201</width>
+         <width>224</width>
          <height>391</height>
         </rect>
        </property>
@@ -100,14 +100,20 @@
       <widget class="SozaiTreeWidget" name="targetList_bg">
        <property name="geometry">
         <rect>
-         <x>650</x>
+         <x>620</x>
          <y>30</y>
-         <width>301</width>
+         <width>331</width>
          <height>365</height>
         </rect>
        </property>
        <property name="acceptDrops">
         <bool>true</bool>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="sizeAdjustPolicy">
+        <enum>QAbstractScrollArea::AdjustIgnored</enum>
        </property>
        <property name="dragDropMode">
         <enum>QAbstractItemView::DropOnly</enum>
@@ -115,99 +121,98 @@
        <property name="defaultDropAction">
         <enum>Qt::MoveAction</enum>
        </property>
+       <property name="uniformRowHeights">
+        <bool>true</bool>
+       </property>
+       <property name="sortingEnabled">
+        <bool>true</bool>
+       </property>
+       <property name="animated">
+        <bool>true</bool>
+       </property>
+       <property name="headerHidden">
+        <bool>false</bool>
+       </property>
        <property name="columnCount">
         <number>2</number>
        </property>
+       <attribute name="headerVisible">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="headerCascadingSectionResizes">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="headerDefaultSectionSize">
+        <number>150</number>
+       </attribute>
+       <attribute name="headerHighlightSections">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="headerMinimumSectionSize">
+        <number>30</number>
+       </attribute>
+       <attribute name="headerShowSortIndicator" stdset="0">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="headerStretchLastSection">
+        <bool>true</bool>
+       </attribute>
        <column>
         <property name="text">
-         <string notr="true">1</string>
+         <string notr="true">分类名</string>
         </property>
        </column>
        <column>
         <property name="text">
-         <string notr="true">2</string>
+         <string notr="true">文件名</string>
         </property>
        </column>
       </widget>
-      <widget class="QPushButton" name="importButton_bg">
+      <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>600</x>
-         <y>150</y>
-         <width>41</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;将资源目录下的文件导入到素材数据库中。&lt;br /&gt;可以给素材起一个便于理解的名字！&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>导入&gt;&gt;</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="removeButton_bg">
-       <property name="geometry">
-        <rect>
-         <x>599</x>
-         <y>220</y>
-         <width>42</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;从素材数据库中移除选中的资源。&lt;br/&gt;不会删除目录下的文件。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>&lt;&lt;移除</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="addButton_bg">
-       <property name="geometry">
-        <rect>
-         <x>600</x>
-         <y>40</y>
-         <width>41</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;添加一个『占位』素材到素材数据库。&lt;br/&gt;可以在画室/乐师完成创作工作前，现行进行程序编写。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>占位&gt;&gt;</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="addClassButton_bg">
-       <property name="geometry">
-        <rect>
-         <x>650</x>
+         <x>619</x>
          <y>399</y>
-         <width>100</width>
-         <height>23</height>
+         <width>331</width>
+         <height>25</height>
         </rect>
        </property>
-       <property name="text">
-        <string>添加子分类</string>
-       </property>
-       <property name="default">
-        <bool>false</bool>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="removeClassButton_bg">
-       <property name="geometry">
-        <rect>
-         <x>751</x>
-         <y>399</y>
-         <width>101</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>移除子分类</string>
-       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="addClassButton_bg">
+          <property name="text">
+           <string>添加子分类</string>
+          </property>
+          <property name="default">
+           <bool>false</bool>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="removeClassButton_bg">
+          <property name="text">
+           <string>移除子分类</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="copyClassButton_bg">
+          <property name="text">
+           <string>复制子分类</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="clearButton_bg">
+          <property name="text">
+           <string>清除导入</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
      <widget class="QWidget" name="tab_2">

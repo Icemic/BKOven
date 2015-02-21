@@ -266,6 +266,12 @@ void QBkeVariable::remove(int i)
     }
 }
 
+void QBkeVariable::append(const QBkeVariable &v)
+{
+    if(_var)
+        _var->push_back(*v._var);
+}
+
 void QBkeVariable::insert(int i, const QBkeVariable &_v)
 {
     if(_var->isVoid())

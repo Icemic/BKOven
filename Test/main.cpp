@@ -1,6 +1,6 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include <QApplication>
-
+#include "../shared/vshack.h"
 #include "NewProjectWizard.h"
 #include "SozaiImportWizard.h"
 
@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
 
 //    NewProjectWizard::open();
     SozaiImportWizard::open("D:/workspace/Git/BKOven测试/test");
+//    SozaiImportWizard::open("./test");
 
     return a.exec();
 }

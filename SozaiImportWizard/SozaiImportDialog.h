@@ -36,10 +36,10 @@ private:
 
     QStringList getFileNamesInChildren(QTreeWidgetItem* parent);
 
-//    bool isEditting = false;
-
 private slots:
     void _exportSozaiConfig();  //内部用，按下确定后触发，刷新doc值
+    QBkeVariable _exportSozaiConfig_recursive(QTreeWidgetItem* parent);  //递归函数
+
 
 };
 
