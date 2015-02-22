@@ -2,7 +2,12 @@
 #define SOZAIIMPORTDIALOG_H
 
 #include <QDialog>
+#include <QListWidget>
 #include <QTreeWidget>
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include <QOpenGLWidget>
+#include "SozaiTreeWidget.h"
 #include "../ParserHelper/ParserHelper.h"
 
 namespace Ui {
@@ -32,14 +37,14 @@ private:
 
 
 
-    void init_bg();
+    void init_image(QGraphicsView *graphicsView, QListWidget *originList, SozaiTreeWidget *targetList, QPushButton *addClassButton, QPushButton *removeClassButton, QPushButton *copyClassButton, QPushButton *clearButton, const QString &topItemName, const QString &folderName);
+    void loadOriginListAndTargetList_image(QDir dir, const QString &folderName, QListWidget *originList, SozaiTreeWidget *targetList);
 
     QStringList getFileNamesInChildren(QTreeWidgetItem* parent);
 
 private slots:
     void _exportSozaiConfig();  //内部用，按下确定后触发，刷新doc值
     QBkeVariable _exportSozaiConfig_recursive(QTreeWidgetItem* parent);  //递归函数
-
 
 };
 

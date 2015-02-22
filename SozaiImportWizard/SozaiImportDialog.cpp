@@ -5,9 +5,6 @@
 #include <functional>
 #include <QDir>
 #include <QMessageBox>
-#include <QGraphicsView>
-#include <QGraphicsScene>
-#include <QOpenGLWidget>
 #include <QDebug>
 
 SozaiImportDialog::SozaiImportDialog(QWidget *parent) :
@@ -18,7 +15,15 @@ SozaiImportDialog::SozaiImportDialog(QWidget *parent) :
 
 
 
-    init_bg();
+    init_image(ui->graphicsView_bg, ui->originList_bg, ui->targetList_bg,
+            ui->addClassButton_bg, ui->removeClassButton_bg, ui->copyClassButton_bg, ui->clearButton_bg,
+               tr("背景图片素材库"), "background");
+    init_image(ui->graphicsView_ch, ui->originList_ch, ui->targetList_ch,
+            ui->addClassButton_ch, ui->removeClassButton_ch, ui->copyClassButton_ch, ui->clearButton_ch,
+               tr("立绘图片素材库"), "character");
+    init_image(ui->graphicsView_item, ui->originList_item, ui->targetList_item,
+            ui->addClassButton_item, ui->removeClassButton_item, ui->copyClassButton_item, ui->clearButton_item,
+               tr("物件图片素材库"), "item");
 
 
 
@@ -36,34 +41,37 @@ SozaiImportDialog::~SozaiImportDialog()
     delete ui;
 }
 
-void SozaiImportDialog::init_bg()
+//界面初始化函数，图片类tab通用
+void SozaiImportDialog::init_image(QGraphicsView* graphicsView, QListWidget* originList, SozaiTreeWidget* targetList,
+                                   QPushButton* addClassButton, QPushButton* removeClassButton, QPushButton* copyClassButton, QPushButton* clearButton,
+                                   const QString &topItemName, const QString &folderName)
 {
     //初始化预览框
-    QGraphicsScene *scene_bg = new QGraphicsScene();
-    ui->graphicsView_bg->setScene(scene_bg);
-    ui->graphicsView_bg->setAlignment(Qt::AlignCenter);
+    QGraphicsScene *scene = new QGraphicsScene();
+    graphicsView->setScene(scene);
+    graphicsView->setAlignment(Qt::AlignCenter);
     //ui->graphicsView_bg->setBackgroundBrush(QBrush());
-    ui->graphicsView_bg->setAutoFillBackground(true);
-    ui->originList_bg->setSortingEnabled(true);
+    graphicsView->setAutoFillBackground(true);
+    originList->setSortingEnabled(true);
 
     //0-root, 1-sub, 2-end without value, 3-end with value
 
-    QTreeWidgetItem* item = new QTreeWidgetItem(QStringList(tr("背景图片素材库")));
+    QTreeWidgetItem* item = new QTreeWidgetItem(QStringList(topItemName));
     item->setData(0,Qt::UserRole,0);
     item->setTextColor(1,QColor("red"));
-    ui->targetList_bg->addTopLevelItem(item);
-    ui->targetList_bg->setCurrentItem(item);
-    ui->targetList_bg->header()->setSortIndicator(0,Qt::AscendingOrder);
-    ui->targetList_bg->setHeaderHidden(false);
+    targetList->addTopLevelItem(item);
+    targetList->setCurrentItem(item);
+    targetList->header()->setSortIndicator(0,Qt::AscendingOrder);
+    targetList->setHeaderHidden(false);
 
 
 
     //添加子分类
-    connect(ui->addClassButton_bg,&QPushButton::clicked,[=](){
-        if(ui->targetList_bg->currentItem() == nullptr)
+    connect(addClassButton,&QPushButton::clicked,[=](){
+        if(targetList->currentItem() == nullptr)
             return;
 
-        if(ui->targetList_bg->currentItem()->data(0,Qt::UserRole)==3){
+        if(targetList->currentItem()->data(0,Qt::UserRole)==3){
             QMessageBox::warning(this,tr("素材导入"),tr("请先移除该分类下已经导入的素材，方可添加子分类。\n（只有最末级子分类可以导入素材）"));
             return;
         }
@@ -75,36 +83,36 @@ void SozaiImportDialog::init_bg()
         child->setTextColor(1,QColor("red"));
 
 
-        QTreeWidgetItem* parent = ui->targetList_bg->currentItem();
-        if(parent!=ui->targetList_bg->topLevelItem(0)){
+        QTreeWidgetItem* parent = targetList->currentItem();
+        if(parent!=targetList->topLevelItem(0)){
             parent->setData(0,Qt::UserRole,1);
             parent->setText(1,"");
         }
-        ui->targetList_bg->currentItem()->addChild(child);
-        ui->targetList_bg->currentItem()->setExpanded(true);
+        targetList->currentItem()->addChild(child);
+        targetList->currentItem()->setExpanded(true);
         child->setText(0,tr(""));
-        ui->targetList_bg->editItem(child);
+        targetList->editItem(child);
     });
 
     //移除子分类
-    connect(ui->removeClassButton_bg,&QPushButton::clicked,[=](){
-        if(ui->targetList_bg->currentItem() == nullptr)
+    connect(removeClassButton,&QPushButton::clicked,[=](){
+        if(targetList->currentItem() == nullptr)
             return;
-        if(ui->targetList_bg->currentItem()->data(0,Qt::UserRole)==0)
+        if(targetList->currentItem()->data(0,Qt::UserRole)==0)
             return;
 
         //得到父子包含的素材文件路径列表
-        QStringList fileList = getFileNamesInChildren(ui->targetList_bg->currentItem());
+        QStringList fileList = getFileNamesInChildren(targetList->currentItem());
 
         //从targetList中删除（包含子类）
-        ui->targetList_bg->currentItem()->parent()->takeChild(ui->targetList_bg->currentItem()->parent()
-                                                      ->indexOfChild(ui->targetList_bg->currentItem()));
+        targetList->currentItem()->parent()->takeChild(targetList->currentItem()->parent()
+                                                      ->indexOfChild(targetList->currentItem()));
 
         //将删除的素材放回originList
-        ui->originList_bg->addItems(fileList);
+        originList->addItems(fileList);
 
         //判断父级是否有子项
-        QTreeWidgetItem* parent = ui->targetList_bg->currentItem()->parent();
+        QTreeWidgetItem* parent = targetList->currentItem()->parent();
         if(parent->childCount()==0){
             parent->setText(1,tr("拖拽到此处导入素材"));
             parent->setTextColor(1,QColor("red"));
@@ -113,16 +121,16 @@ void SozaiImportDialog::init_bg()
     });
 
     //拖拽释放事件
-    connect(ui->targetList_bg,&SozaiTreeWidget::dropped,[=](QTreeWidgetItem* target, QMap<int,QVariant> data){
+    connect(targetList,&SozaiTreeWidget::dropped,[=](QTreeWidgetItem* target, QMap<int,QVariant> data){
         if(target->data(0,Qt::UserRole)==2){
             target->setText(1,data.value(0).toString());
             target->setTextColor(1,QColor("black"));
-            ui->originList_bg->takeItem(ui->originList_bg->currentRow());
+            originList->takeItem(originList->currentRow());
             target->setData(0,Qt::UserRole,3);
         }
         else if(target->data(0,Qt::UserRole)==3){
-            ui->originList_bg->addItem(target->text(1));
-            ui->originList_bg->takeItem(ui->originList_bg->currentRow());
+            originList->addItem(target->text(1));
+            originList->takeItem(originList->currentRow());
             target->setText(1,data.value(0).toString());
         }
         else{
@@ -132,31 +140,31 @@ void SozaiImportDialog::init_bg()
 
 
     //originList选中项改变
-    connect(ui->originList_bg,&QListWidget::currentTextChanged,[=](const QString &text){
-        QGraphicsView *view = ui->graphicsView_bg;
+    connect(originList,&QListWidget::currentTextChanged,[=](const QString &text){
+        QGraphicsView *view = graphicsView;
         view->scene()->clear();
-        view->scene()->addPixmap(QPixmap(projectDataPath+"background/"+text)
+        view->scene()->addPixmap(QPixmap(projectDataPath+folderName+"/"+text)
                                                 .scaled(view->width()-2,view->height()-2,Qt::KeepAspectRatio,Qt::SmoothTransformation));
     });
 
     //targetList选中项改变
-    connect(ui->targetList_bg,&SozaiTreeWidget::currentItemChanged,[=](QTreeWidgetItem* current,QTreeWidgetItem*){
+    connect(targetList,&SozaiTreeWidget::currentItemChanged,[=](QTreeWidgetItem* current,QTreeWidgetItem*){
         if(current->data(0,Qt::UserRole)==3){
-            QGraphicsView *view = ui->graphicsView_bg;
+            QGraphicsView *view = graphicsView;
             view->scene()->clear();
-            view->scene()->addPixmap(QPixmap(projectDataPath+"background/"+current->text(1))
+            view->scene()->addPixmap(QPixmap(projectDataPath+folderName+"/"+current->text(1))
                                                     .scaled(view->width()-2,view->height()-2,Qt::KeepAspectRatio,Qt::SmoothTransformation));
         }
     });
 
     //禁止第二栏编辑
-    connect(ui->targetList_bg,&SozaiTreeWidget::itemDoubleClicked,[this](QTreeWidgetItem* item,int col){
+    connect(targetList,&SozaiTreeWidget::itemDoubleClicked,[=](QTreeWidgetItem* item,int col){
         if(col==1)
-            ui->targetList_bg->editItem(item,0);
+            targetList->editItem(item,0);
     });
 
     //防止空内容、消左右空格、查重名
-    connect(ui->targetList_bg,&SozaiTreeWidget::itemChanged,[=](QTreeWidgetItem* item,int){
+    connect(targetList,&SozaiTreeWidget::itemChanged,[=](QTreeWidgetItem* item,int){
 
         if(item->data(0,Qt::UserRole)==0)
             return;
@@ -179,7 +187,7 @@ void SozaiImportDialog::init_bg()
                 if(item2!=item && item2->text(0)==item->text(0)){
                     QMessageBox::warning(this,tr("素材导入"),tr("同一父分类下的子分类不能重名哦～"));
                     item->setText(0,"");
-                    ui->targetList_bg->editItem(item,0);
+                    targetList->editItem(item,0);
                 }
             }
         });
@@ -187,8 +195,8 @@ void SozaiImportDialog::init_bg()
     });
 
     //复制
-    connect(ui->copyClassButton_bg,&QPushButton::clicked,[=](){
-        QTreeWidgetItem* item = ui->targetList_bg->currentItem();
+    connect(copyClassButton,&QPushButton::clicked,[=](){
+        QTreeWidgetItem* item = targetList->currentItem();
         if(item->data(0,Qt::UserRole)==0)
             return;
 
@@ -218,8 +226,8 @@ void SozaiImportDialog::init_bg()
 
         //展开复制出的新项目
         std::function<void(QTreeWidgetItem*)> expand_recursive;
-        expand_recursive = [&expand_recursive,this](QTreeWidgetItem* parent){
-            ui->targetList_bg->expandItem(parent);
+        expand_recursive = [=,&expand_recursive](QTreeWidgetItem* parent){
+            targetList->expandItem(parent);
             int i,I = parent->childCount();
             for(i=0;i<I;i++){
                 QTreeWidgetItem* item = parent->child(i);
@@ -233,12 +241,12 @@ void SozaiImportDialog::init_bg()
     });
 
     //清除当前
-    connect(ui->clearButton_bg,&QPushButton::clicked,[=](){
-        QTreeWidgetItem* item = ui->targetList_bg->currentItem();
+    connect(clearButton,&QPushButton::clicked,[=](){
+        QTreeWidgetItem* item = targetList->currentItem();
         if(item->data(0,Qt::UserRole)!=3)
             return;
 
-        ui->originList_bg->addItem(item->text(1));
+        originList->addItem(item->text(1));
 
         item->setText(1,tr("拖拽到此处导入素材"));
         item->setTextColor(1,QColor("red"));
@@ -248,6 +256,7 @@ void SozaiImportDialog::init_bg()
 
 }
 
+//从树形Item结构中获取text(1)的文件名数组，递归，树形通用
 QStringList SozaiImportDialog::getFileNamesInChildren(QTreeWidgetItem *parent)
 {
     QStringList list;
@@ -255,11 +264,11 @@ QStringList SozaiImportDialog::getFileNamesInChildren(QTreeWidgetItem *parent)
     int i;
 
 
-    if(parent->data(0,Qt::UserRole)==3)   //被删除的是最末级子类
+    if(parent->data(0,Qt::UserRole)==3)   //最末级子类
     {
             list << parent->text(1);
     }
-    else    //被删除的是非最末级子类
+    else    //被非最末级子类
     {
         for(i = 0;i < I;i++){
             QTreeWidgetItem* child = parent->child(i);
@@ -272,7 +281,7 @@ QStringList SozaiImportDialog::getFileNamesInChildren(QTreeWidgetItem *parent)
     return list;
 }
 
-
+//外部调用启动窗口
 bool SozaiImportDialog::execWithPath(const QString &path)
 {
     projectDataPath = path + "/Data/";
@@ -286,18 +295,6 @@ bool SozaiImportDialog::execWithPath(const QString &path)
         return false;
     }
 
-    //读取背景文件
-    dir.cd("Data/background");
-    QStringList imageNameFilters;
-    imageNameFilters << "*.bmp" << "*.png" << "*.jpg";
-    QStringList bgFileList = this->recursiveSearch(dir.absolutePath()+"/",dir.absolutePath()+"/", imageNameFilters);
-
-    //读取立绘文件
-    //....
-
-
-
-
     /*读取配置文件中的文件列表（targetList）*/
     //加载当前配置
     QFile f(path+"/config/sozai.bkpsr");
@@ -305,12 +302,30 @@ bool SozaiImportDialog::execWithPath(const QString &path)
     doc.loadFromBinary(f.readAll());
     f.close();
 
+    //装载列表
+    loadOriginListAndTargetList_image(dir,"background",ui->originList_bg,ui->targetList_bg);
+    loadOriginListAndTargetList_image(dir,"character",ui->originList_ch,ui->targetList_ch);
+    loadOriginListAndTargetList_image(dir,"item",ui->originList_item,ui->targetList_item);
+
+
+
+    //启动窗口
+    return this->exec();
+}
+
+void SozaiImportDialog::loadOriginListAndTargetList_image(QDir dir, const QString &folderName, QListWidget* originList, SozaiTreeWidget* targetList)
+{
+    //读取文件
+    dir.cd("Data/"+folderName);
+    QStringList imageNameFilters;
+    imageNameFilters << "*.bmp" << "*.png" << "*.jpg";
+    QStringList fileList = this->recursiveSearch(dir.absolutePath()+"/",dir.absolutePath()+"/", imageNameFilters);
 
     /*消重复、判断文件存在性、向QListView添加数据*/
     //背景图片
-    QBkeDictionary targetData_bg = doc["background"].toBkeDic();
-    std::function<void(const QBkeDictionary&, QTreeWidgetItem*)> bgRead_recursive;
-    bgRead_recursive = [this,&bgRead_recursive,&bgFileList](const QBkeDictionary &data, QTreeWidgetItem* parent){
+    QBkeDictionary targetData = doc[folderName].toBkeDic();
+    std::function<void(const QBkeDictionary&, QTreeWidgetItem*)> read_recursive;
+    read_recursive = [this,&read_recursive,&fileList](const QBkeDictionary &data, QTreeWidgetItem* parent){
         QBkeDictionary::const_iterator ite;
         for(ite = data.begin();ite!=data.end();ite++){
             QBkeVariable member = data[ite.key()];
@@ -324,7 +339,7 @@ bool SozaiImportDialog::execWithPath(const QString &path)
                     item->setTextColor(1,QColor("red"));
                 }else{
                     item->setText(1,member.toString());
-                    bool exist = bgFileList.removeOne(member.toString());
+                    bool exist = fileList.removeOne(member.toString());
                     if(!exist){
                         item->setTextColor(1,QColor("red"));
                         item->setData(0,Qt::UserRole,2);
@@ -341,26 +356,19 @@ bool SozaiImportDialog::execWithPath(const QString &path)
                 pItem->setText(0,ite.key());
                 pItem->setFlags(pItem->flags() | Qt::ItemIsEditable);
                 parent->addChild(pItem);
-                bgRead_recursive(member.toBkeDic(),pItem);
+                read_recursive(member.toBkeDic(),pItem);
             }
         }
     };
-    bgRead_recursive(targetData_bg,ui->targetList_bg->topLevelItem(0));
+    read_recursive(targetData,ui->targetList_bg->topLevelItem(0));
     //向originList一次性添加
-    ui->originList_bg->addItems(bgFileList);
+    originList->addItems(fileList);
     //展开树形结构
-    ui->targetList_bg->expandAll();
-
-    //立绘图片
-    //....
-
-
-
-
-    //启动窗口
-    return this->exec();
+    targetList->expandAll();
 }
 
+
+//递归搜索某目录下全部的某特定扩展名的文件并返回数组，通用
 QStringList SozaiImportDialog::recursiveSearch(const QString &path, const QString &relativePath, const QStringList &nameFilters)
 {
     QStringList fileList;
@@ -377,13 +385,16 @@ QStringList SozaiImportDialog::recursiveSearch(const QString &path, const QStrin
     return fileList;
 }
 
+//导出素材配置文件，非通用
 void SozaiImportDialog::_exportSozaiConfig()
 {
     doc.setVoid();  //清空
     //导出背景图片信息
     doc["background"] = _exportSozaiConfig_recursive(ui->targetList_bg->topLevelItem(0));
+    doc["character"] = _exportSozaiConfig_recursive(ui->targetList_ch->topLevelItem(0));
 }
 
+//从当前targetList生成parser格式的存储数据，递归，树形通用
 QBkeVariable SozaiImportDialog::_exportSozaiConfig_recursive(QTreeWidgetItem *parent)
 {
     QBkeVariable root = QBkeVariable::dic();

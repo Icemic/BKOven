@@ -1,4 +1,4 @@
-#include "NewProjectWizard.h"
+﻿#include "NewProjectWizard.h"
 
 #include "NewProjectDialog.h"
 #include "ParserHelper.h"
@@ -39,7 +39,7 @@ bool NewProjectWizard::open()
         dir.mkdir("background");
         dir.mkdir("character");
         dir.mkdir("item");
-        dir.mkdir("button");
+//        dir.mkdir("button");
         dir.mkdir("ui");
         dir.mkdir("bgm");
         dir.mkdir("se");
