@@ -42,6 +42,21 @@ void QBKAudio::resume(int channel)
     return BKE_Audio::getInstance()->resume(channel);
 }
 
+void QBKAudio::seek(int channel, qint64 position)
+{
+    return BKE_Audio::getInstance()->seek(channel,position);
+}
+
+qint64 QBKAudio::tell(int channel)
+{
+    return BKE_Audio::getInstance()->tell(channel);
+}
+
+void QBKAudio::unload(int channel)
+{
+    BKE_Audio::getInstance()->unload_sound_from_channel(channel);
+}
+
 AudioError QBKAudio::playVoice(const QString &filename, int vol)
 {
     return BKE_Audio::getInstance()->play_voice(filename, vol);

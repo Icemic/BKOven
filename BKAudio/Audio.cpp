@@ -243,7 +243,7 @@ static const char* audioSuffix[]=
 {
     ".ogg",
     ".mp3",
-#if USE_OPUS
+#ifdef USE_OPUS
     ".opus",
 #endif
     ".wav",
@@ -391,6 +391,30 @@ void BKE_Audio::resume(bklong channel){
 		return;
 	stream->start();
 	return;
+}
+
+//大括号怎么不换行！楼上楼下都是异端！
+void BKE_Audio::seek(bklong channel, double position)
+{
+    if (this->uninitialized)
+        return;
+    BKE_MutexLocker ml(this->mutex);
+    audio_stream *stream=this->get_channel(channel);
+    if (!stream)
+        return;
+    stream->seek(position);
+    return;
+}
+
+double BKE_Audio::tell(bklong channel)
+{
+    if (this->uninitialized)
+        return 0;
+    BKE_MutexLocker ml(this->mutex);
+    audio_stream *stream=this->get_channel(channel);
+    if (!stream)
+        return 0;
+    return stream->tell();;
 }
 
 AudioError BKE_Audio::play_sound(const QString &filename, bklong channel, bklong vol, bklong times, bool automatic_cleanup, bool calcRealTimeVolume /*= false*/){

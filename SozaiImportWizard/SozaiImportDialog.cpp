@@ -6,6 +6,10 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QtMultimedia>
+#include "BKAudio.h"
+#include "taglib/taglib.h"
+#include "taglib/fileref.h"
+#include "taglib/tpropertymap.h"
 #include <QDebug>
 
 SozaiImportDialog::SozaiImportDialog(QWidget *parent) :
@@ -273,44 +277,67 @@ void SozaiImportDialog::init_sound(QTableWidget* metaDataWidget, QPushButton* me
     metaDataWidget->setEnabled(false);
 
 
-    QMediaPlayer* mediaPlayer = new QMediaPlayer();
+    //QMediaPlayer* mediaPlayer = new QMediaPlayer();
+
+    //播放进度滑条
+    QTimer *playProcessTimer = new QTimer();
+    connect(playProcessTimer,&QTimer::timeout,[=](){
+        qint64 pos = QBKAudio::getInstance()->tell(0);
+        playProcessSlider->setRange(0,360000);
+        playProcessSlider->setValue(pos);
+        playPostionLabel->setText(QString("%1 / %2").arg(QTime::fromMSecsSinceStartOfDay(pos).toString("mm:ss"),QTime::fromMSecsSinceStartOfDay(360000).toString("mm:ss")));
+    });
+    playProcessTimer->start(1000);
 
     //窗口关闭时停止并销毁
     connect(this,&SozaiImportDialog::destroyed,[=](){
-        mediaPlayer->stop();
-        mediaPlayer->deleteLater();
+//        mediaPlayer->stop();
+//        mediaPlayer->deleteLater();
+        playProcessTimer->stop();
+        playProcessTimer->deleteLater();
+        QBKAudio::getInstance()->stop(0);
+        QBKAudio::getInstance()->unload(0);
     });
 
     //元数据显示
-    connect(mediaPlayer,static_cast<void(QMediaPlayer::*)()>(&QMediaPlayer::metaDataChanged),[=](){
-        metaDataWidget->item(0,0)->setText(mediaPlayer->currentMedia().canonicalUrl().fileName());
-        metaDataWidget->item(1,0)->setText(mediaPlayer->metaData("Title").toString());
-        metaDataWidget->item(2,0)->setText(mediaPlayer->metaData("AlbumTitle").toString());
-        metaDataWidget->item(3,0)->setText(mediaPlayer->metaData("ContributingArtist").toString());
-        metaDataWidget->item(4,0)->setText(mediaPlayer->metaData("Lyrics").toString());
-        metaDataWidget->item(5,0)->setText(mediaPlayer->metaData("Composer").toString());
-        metaDataWidget->item(6,0)->setText(mediaPlayer->metaData("AlbumArtist").toString());
-        metaDataWidget->item(7,0)->setText(mediaPlayer->metaData("Copyright").toString());
-    });
+//    connect(mediaPlayer,static_cast<void(QMediaPlayer::*)()>(&QMediaPlayer::metaDataChanged),[=](){
+//        metaDataWidget->item(0,0)->setText(mediaPlayer->currentMedia().canonicalUrl().fileName());
+//        metaDataWidget->item(1,0)->setText(mediaPlayer->metaData("Title").toString());
+//        metaDataWidget->item(2,0)->setText(mediaPlayer->metaData("AlbumTitle").toString());
+//        metaDataWidget->item(3,0)->setText(mediaPlayer->metaData("ContributingArtist").toString());
+//        metaDataWidget->item(4,0)->setText(mediaPlayer->metaData("Lyrics").toString());
+//        metaDataWidget->item(5,0)->setText(mediaPlayer->metaData("Composer").toString());
+//        metaDataWidget->item(6,0)->setText(mediaPlayer->metaData("AlbumArtist").toString());
+//        metaDataWidget->item(7,0)->setText(mediaPlayer->metaData("Copyright").toString());
+//    });
 
     //无法编辑元数据，按钮暂时隐藏
     metaDataEditButton->hide();
     metaDataResetButton->hide();
 
     //播放进度滑条
-    connect(mediaPlayer,&QMediaPlayer::positionChanged,[=](qint64 pos){
-        playProcessSlider->setRange(0,mediaPlayer->duration());
-        playProcessSlider->setValue(pos);
-        playPostionLabel->setText(QString("%1 / %2").arg(QTime::fromMSecsSinceStartOfDay(pos).toString("mm:ss"),QTime::fromMSecsSinceStartOfDay(mediaPlayer->duration()).toString("mm:ss")));
-    });
+//    connect(mediaPlayer,&QMediaPlayer::positionChanged,[=](qint64 pos){
+//        playProcessSlider->setRange(0,mediaPlayer->duration());
+//        playProcessSlider->setValue(pos);
+//        playPostionLabel->setText(QString("%1 / %2").arg(QTime::fromMSecsSinceStartOfDay(pos).toString("mm:ss"),QTime::fromMSecsSinceStartOfDay(mediaPlayer->duration()).toString("mm:ss")));
+//    });
 
     //进度条拖动
-    connect(playProcessSlider,&QSlider::valueChanged,mediaPlayer,&QMediaPlayer::setPosition);
+    //connect(playProcessSlider,&QSlider::valueChanged,mediaPlayer,&QMediaPlayer::setPosition);
+    connect(playProcessSlider,&QSlider::sliderMoved,[=](int pos){
+        QBKAudio::getInstance()->seek(0,pos);
+    });
 
     //播放、暂停、停止按钮
-    connect(playButton,&QPushButton::clicked,mediaPlayer,&QMediaPlayer::play);
-    connect(pauseButton,&QPushButton::clicked,mediaPlayer,&QMediaPlayer::pause);
-    connect(stopButton,&QPushButton::clicked,mediaPlayer,&QMediaPlayer::stop);
+    connect(playButton,&QPushButton::clicked,[=](){
+        QBKAudio::getInstance()->resume(0);
+    });
+    connect(pauseButton,&QPushButton::clicked,[=](){
+        QBKAudio::getInstance()->pause(0);
+    });
+    connect(stopButton,&QPushButton::clicked,[=](){
+        QBKAudio::getInstance()->stop(0);
+    });
 
     QTreeWidgetItem* item = new QTreeWidgetItem(QStringList(topItemName));
     item->setData(0,Qt::UserRole,0);
@@ -397,13 +424,29 @@ void SozaiImportDialog::init_sound(QTableWidget* metaDataWidget, QPushButton* me
 
     //originList选中项改变
     connect(originList,&QListWidget::currentTextChanged,[=](const QString &text){
-        mediaPlayer->setMedia(QUrl::fromLocalFile(projectDataPath+folderName+"/"+text));
+//        mediaPlayer->setMedia(QUrl::fromLocalFile(projectDataPath+folderName+"/"+text));
+        QBKAudio::getInstance()->playSound(projectDataPath+folderName+"/"+text,0,100,-1,false,false);
+        QBKAudio::getInstance()->pause(0);
+//        TagLib::FileName fileName((projectDataPath+folderName+"/"+text).toStdWString().c_str());
+//        TagLib::FileRef f(fileName);
+//        if(!f.file()->isValid()) return;
+//        metaDataWidget->item(0,0)->setText(QString::fromStdWString(f.file()->name().wstr()));
+//        metaDataWidget->item(1,0)->setText(QString::fromStdWString(f.tag()->title().toWString()));
+//        metaDataWidget->item(2,0)->setText(QString::fromStdWString(f.tag()->album().toWString()));
+//        metaDataWidget->item(3,0)->setText(QString::fromStdWString(f.tag()->artist().toWString()));
+//        metaDataWidget->item(4,0)->setText(QString::fromStdWString(f.tag()->properties()["LYRICIST"][0].toWString()));
+//        metaDataWidget->item(5,0)->setText(QString::fromStdWString(f.tag()->properties()["COMPOSER"][0].toWString()));
+//        metaDataWidget->item(6,0)->setText(QString::fromStdWString(f.tag()->properties()["ALBUMARTIST"][0].toWString()));
+//        metaDataWidget->item(7,0)->setText(QString::fromStdWString(f.tag()->properties()["COPYRIGHT"][0].toWString()));
+
     });
 
     //targetList选中项改变
     connect(targetList,&SozaiTreeWidget::currentItemChanged,[=](QTreeWidgetItem* current,QTreeWidgetItem*){
         if(current->data(0,Qt::UserRole)==3){
-            mediaPlayer->setMedia(QUrl::fromLocalFile(projectDataPath+folderName+"/"+current->text(1)));
+//            mediaPlayer->setMedia(QUrl::fromLocalFile(projectDataPath+folderName+"/"+current->text(1)));
+            QBKAudio::getInstance()->playSound(projectDataPath+folderName+"/"+current->text(1),0,100,-1,false,false);
+            QBKAudio::getInstance()->pause(0);
         }
     });
 

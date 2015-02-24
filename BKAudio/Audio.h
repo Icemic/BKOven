@@ -42,6 +42,8 @@ public:
     AudioError stop(bklong channel, bklong fadeout = 0);
 	void pause(bklong channel);
 	void resume(bklong channel);
+    double tell(bklong channel);
+    void seek(bklong channel, double position);
     AudioError play_voice(const QString &filename, bklong vol = 100);
     AudioError stop_voice(bklong fadeout = 0);
     AudioError play_sound(const QString &filename, bklong channel, bklong vol, bklong times, bool automatic_cleanup, bool calcRealTimeVolume = false);

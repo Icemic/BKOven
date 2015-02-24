@@ -33,3 +33,17 @@ else:unix: LIBS += -L$$OUT_PWD/../ParserHelper/ -lParserHelper
 
 INCLUDEPATH += $$PWD/../ParserHelper
 DEPENDPATH += $$PWD/../ParserHelper
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../BKAudio/release/ -lBKAudio
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../BKAudio/debug/ -lBKAudio
+else:unix: LIBS += -L$$OUT_PWD/../BKAudio/ -lBKAudio
+
+INCLUDEPATH += $$PWD/../BKAudio
+DEPENDPATH += $$PWD/../BKAudio
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../shared/taglib/vs2013/lib/ -ltag
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../shared/taglib/vs2013/lib/ -ltagd
+else:unix: LIBS += -L$$PWD/../shared/taglib/vs2013/lib/ -ltag
+
+INCLUDEPATH += $$PWD/../shared/taglib/vs2013/include
+DEPENDPATH += $$PWD/../shared/taglib/vs2013/include

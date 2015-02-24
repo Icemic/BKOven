@@ -24,6 +24,9 @@ public:
     AudioError stop(int channel, int fadeout = 0);
     void pause(int channel);
     void resume(int channel);
+    void seek(int channel, qint64 position);
+    qint64 tell(int channel);
+    void unload(int channel);
     AudioError playVoice(const QString &filename, int vol = 100);
     AudioError stopVoice(int fadeout = 0);
     AudioError playSound(const QString &filename, int channel, int vol, int times, bool automatic_cleanup, bool calcRealTimeVolume = false);

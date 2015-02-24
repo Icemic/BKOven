@@ -113,7 +113,7 @@ void ogg_decoder::seek(double loopto){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //opus
 
-#if USE_OPUS
+#ifdef USE_OPUS
 // Convert an opus error code to a string.
 const char *opus_error_to_string(int error)
 {

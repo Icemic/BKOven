@@ -376,7 +376,7 @@ decoder *initialize_decoder(const QString &filename){
 	static pair array[]={
         {".ogg",new_decoder<ogg_decoder>},
         {".mp3",new_decoder<mp3_decoder>},
-#if USE_OPUS
+#ifdef USE_OPUS
         {".opus",new_decoder<opus_decoder>},
 #endif
         {".wav",new_decoder<wav_decoder>}
