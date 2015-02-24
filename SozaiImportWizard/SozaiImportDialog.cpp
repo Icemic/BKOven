@@ -421,33 +421,48 @@ void SozaiImportDialog::init_sound(QTableWidget* metaDataWidget, QPushButton* me
         }
     });
 
+    //originList或targetList选中项改变的处理函数
+    auto onListTextChanged = [=](const QString &text){
+        QBKAudio::getInstance()->playSound(projectDataPath+folderName+"/"+text,0,100,-1,false,false);
+        QBKAudio::getInstance()->pause(0);
+
+        metaDataWidget->item(0,0)->setText(text.split("/").last());
+
+        TagLib::FileName fileName((projectDataPath+folderName+"/"+text).toStdWString().c_str());
+        TagLib::FileRef f(fileName);
+
+        if(!f.file()->isValid())
+            return;
+        QStringList tagList;
+        tagList << "TITLE" << "ALBUM" << "ARTIST" << "LYRICIST" << "COMPOSER" << "ALBUMARTIST" << "COPYRIGHT";
+        TagLib::PropertyMap propertyMap = f.tag()->properties();
+        for(int i=1;i<=7;i++){
+            TagLib::StringList tagValueList = propertyMap[tagList[i-1].toStdWString().c_str()];
+            if(tagValueList.size()){
+                TagLib::String tagString = propertyMap[tagList[i-1].toStdWString().c_str()][0];
+                if(tagString.isLatin1())
+                    metaDataWidget->item(i,0)->setText(QString::fromLocal8Bit(tagString.toCString()));
+                else
+                    metaDataWidget->item(i,0)->setText(QString::fromStdWString(tagString.toWString()));
+            }
+            else{
+                metaDataWidget->item(i,0)->setText("");
+            }
+        }
+    };
+
+
 
     //originList选中项改变
     connect(originList,&QListWidget::currentTextChanged,[=](const QString &text){
-//        mediaPlayer->setMedia(QUrl::fromLocalFile(projectDataPath+folderName+"/"+text));
-        QBKAudio::getInstance()->playSound(projectDataPath+folderName+"/"+text,0,100,-1,false,false);
-        QBKAudio::getInstance()->pause(0);
-        TagLib::FileName fileName((projectDataPath+folderName+"/"+text).toStdWString().c_str());
-        TagLib::FileRef f(fileName);
-//        if(!f.file()->isValid()) return;
-//        metaDataWidget->item(0,0)->setText(QString::fromStdWString(f.file()->name().wstr()));
-        metaDataWidget->item(1,0)->setText(QString::fromWCharArray(f.tag()->title().toCWString()));
-        qDebug() << QString::fromStdWString(f.tag()->title().toWString());
-//        metaDataWidget->item(2,0)->setText(QString::fromStdWString(f.tag()->album().toWString()));
-//        metaDataWidget->item(3,0)->setText(QString::fromStdWString(f.tag()->artist().toWString()));
-//        metaDataWidget->item(4,0)->setText(QString::fromStdWString(f.tag()->properties()["LYRICIST"][0].toWString()));
-//        metaDataWidget->item(5,0)->setText(QString::fromStdWString(f.tag()->properties()["COMPOSER"][0].toWString()));
-//        metaDataWidget->item(6,0)->setText(QString::fromStdWString(f.tag()->properties()["ALBUMARTIST"][0].toWString()));
-//        metaDataWidget->item(7,0)->setText(QString::fromStdWString(f.tag()->properties()["COPYRIGHT"][0].toWString()));
-
+        onListTextChanged(text);
     });
 
     //targetList选中项改变
     connect(targetList,&SozaiTreeWidget::currentItemChanged,[=](QTreeWidgetItem* current,QTreeWidgetItem*){
         if(current->data(0,Qt::UserRole)==3){
 //            mediaPlayer->setMedia(QUrl::fromLocalFile(projectDataPath+folderName+"/"+current->text(1)));
-            QBKAudio::getInstance()->playSound(projectDataPath+folderName+"/"+current->text(1),0,100,-1,false,false);
-            QBKAudio::getInstance()->pause(0);
+            onListTextChanged(current->text(1));
         }
     });
 
