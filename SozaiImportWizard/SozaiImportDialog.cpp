@@ -427,11 +427,12 @@ void SozaiImportDialog::init_sound(QTableWidget* metaDataWidget, QPushButton* me
 //        mediaPlayer->setMedia(QUrl::fromLocalFile(projectDataPath+folderName+"/"+text));
         QBKAudio::getInstance()->playSound(projectDataPath+folderName+"/"+text,0,100,-1,false,false);
         QBKAudio::getInstance()->pause(0);
-//        TagLib::FileName fileName((projectDataPath+folderName+"/"+text).toStdWString().c_str());
-//        TagLib::FileRef f(fileName);
+        TagLib::FileName fileName((projectDataPath+folderName+"/"+text).toStdWString().c_str());
+        TagLib::FileRef f(fileName);
 //        if(!f.file()->isValid()) return;
 //        metaDataWidget->item(0,0)->setText(QString::fromStdWString(f.file()->name().wstr()));
-//        metaDataWidget->item(1,0)->setText(QString::fromStdWString(f.tag()->title().toWString()));
+        metaDataWidget->item(1,0)->setText(QString::fromWCharArray(f.tag()->title().toCWString()));
+        qDebug() << QString::fromStdWString(f.tag()->title().toWString());
 //        metaDataWidget->item(2,0)->setText(QString::fromStdWString(f.tag()->album().toWString()));
 //        metaDataWidget->item(3,0)->setText(QString::fromStdWString(f.tag()->artist().toWString()));
 //        metaDataWidget->item(4,0)->setText(QString::fromStdWString(f.tag()->properties()["LYRICIST"][0].toWString()));
