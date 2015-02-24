@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>SozaiImportDialog</class>
  <widget class="QDialog" name="SozaiImportDialog">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>素材库</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -988,42 +991,42 @@
        </column>
        <item row="0" column="0">
         <property name="text">
-         <string> </string>
+         <string/>
         </property>
        </item>
        <item row="1" column="0">
         <property name="text">
-         <string> </string>
+         <string/>
         </property>
        </item>
        <item row="2" column="0">
         <property name="text">
-         <string> </string>
+         <string/>
         </property>
        </item>
        <item row="3" column="0">
         <property name="text">
-         <string> </string>
+         <string/>
         </property>
        </item>
        <item row="4" column="0">
         <property name="text">
-         <string> </string>
+         <string/>
         </property>
        </item>
        <item row="5" column="0">
         <property name="text">
-         <string> </string>
+         <string/>
         </property>
        </item>
        <item row="6" column="0">
         <property name="text">
-         <string> </string>
+         <string/>
         </property>
        </item>
        <item row="7" column="0">
         <property name="text">
-         <string> </string>
+         <string/>
         </property>
        </item>
       </widget>
@@ -1031,11 +1034,6 @@
      <widget class="QWidget" name="tab_5">
       <attribute name="title">
        <string>音效</string>
-      </attribute>
-     </widget>
-     <widget class="QWidget" name="tab_6">
-      <attribute name="title">
-       <string>剧本和语音</string>
       </attribute>
      </widget>
     </widget>
