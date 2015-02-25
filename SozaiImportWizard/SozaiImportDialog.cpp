@@ -281,7 +281,12 @@ void SozaiImportDialog::init_sound(QTableWidget* metaDataWidget, QPushButton* me
 
     //播放进度滑条
     QTimer *playProcessTimer = new QTimer();
-    connect(playProcessTimer,&QTimer::timeout,[=](){
+    bool playProcessSliderLock = false; //防止拖动滑条与Timer冲突
+    playProcessSliderLock = false;
+    connect(playProcessTimer,&QTimer::timeout,[=,&playProcessSliderLock](){
+        qDebug() << playProcessSliderLock;
+        if(playProcessSliderLock)
+            return;
         qint64 pos = QBKAudio::getInstance()->tell(0);
         playProcessSlider->setRange(0,360000);
         playProcessSlider->setValue(pos);
@@ -324,8 +329,13 @@ void SozaiImportDialog::init_sound(QTableWidget* metaDataWidget, QPushButton* me
 
     //进度条拖动
     //connect(playProcessSlider,&QSlider::valueChanged,mediaPlayer,&QMediaPlayer::setPosition);
-    connect(playProcessSlider,&QSlider::sliderMoved,[=](int pos){
-        QBKAudio::getInstance()->seek(0,pos);
+    connect(playProcessSlider,&QSlider::sliderPressed,[&playProcessSliderLock](){
+        qDebug() << "aa";
+        playProcessSliderLock = true;
+    });
+    connect(playProcessSlider,&QSlider::sliderReleased,[=,&playProcessSliderLock](){
+        QBKAudio::getInstance()->seek(0,playProcessSlider->value());
+        playProcessSliderLock = false;
     });
 
     //播放、暂停、停止按钮
