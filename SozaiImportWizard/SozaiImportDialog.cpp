@@ -105,6 +105,7 @@ void SozaiImportDialog::init_image(QGraphicsView* graphicsView, QListWidget* ori
         targetList->currentItem()->addChild(child);
         targetList->currentItem()->setExpanded(true);
         child->setText(0,tr(""));
+//        targetList->setCurrentItem(child);
         targetList->editItem(child);
     });
 
@@ -127,7 +128,7 @@ void SozaiImportDialog::init_image(QGraphicsView* graphicsView, QListWidget* ori
 
         //判断父级是否有子项
         QTreeWidgetItem* parent = targetList->currentItem()->parent();
-        if(parent->childCount()==0){
+        if(parent!=nullptr && parent->childCount()==0){
             parent->setText(1,tr("拖拽到此处导入素材"));
             parent->setTextColor(1,QColor("red"));
             parent->setData(0,Qt::UserRole,2);
@@ -155,6 +156,8 @@ void SozaiImportDialog::init_image(QGraphicsView* graphicsView, QListWidget* ori
 
     //originList选中项改变
     connect(originList,&QListWidget::currentTextChanged,[=](const QString &text){
+        if(text.isEmpty())
+            return;
         QGraphicsView *view = graphicsView;
         view->scene()->clear();
         view->scene()->addPixmap(QPixmap(projectDataPath+folderName+"/"+text)
@@ -389,6 +392,7 @@ void SozaiImportDialog::init_sound(QTableWidget* metaDataWidget, QPushButton* me
         targetList->currentItem()->addChild(child);
         targetList->currentItem()->setExpanded(true);
         child->setText(0,tr(""));
+//        targetList->setCurrentItem(child);
         targetList->editItem(child);
     });
 
@@ -411,7 +415,7 @@ void SozaiImportDialog::init_sound(QTableWidget* metaDataWidget, QPushButton* me
 
         //判断父级是否有子项
         QTreeWidgetItem* parent = targetList->currentItem()->parent();
-        if(parent->childCount()==0){
+        if(parent!=nullptr && parent->childCount()==0){
             parent->setText(1,tr("拖拽到此处导入素材"));
             parent->setTextColor(1,QColor("red"));
             parent->setData(0,Qt::UserRole,2);
@@ -464,12 +468,15 @@ void SozaiImportDialog::init_sound(QTableWidget* metaDataWidget, QPushButton* me
                 metaDataWidget->item(i,0)->setText("");
             }
         }
+        f.file()->clear();
     };
 
 
 
     //originList选中项改变
     connect(originList,&QListWidget::currentTextChanged,[=](const QString &text){
+        if(text.isEmpty())
+            return;
         onListTextChanged(text);
     });
 
@@ -598,7 +605,7 @@ QStringList SozaiImportDialog::getFileNamesInChildren(QTreeWidgetItem *parent)
             QTreeWidgetItem* child = parent->child(i);
             if(child->childCount()!=0)
                 list += getFileNamesInChildren(child);
-            if(child->textColor(1).red()!=255)
+            if(child->textColor(1).red()!=255 && !child->text(1).isEmpty())
                 list << child->text(1);
         }
     }

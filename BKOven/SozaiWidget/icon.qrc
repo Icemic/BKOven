@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/Image">
+        <file alias="folder">folder.png</file>
+    </qresource>
+    <qresource prefix="/Sound">
+        <file>play.png</file>
+        <file>stop.png</file>
+    </qresource>
+</RCC>

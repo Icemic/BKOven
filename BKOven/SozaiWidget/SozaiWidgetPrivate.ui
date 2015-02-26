@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SozaiWidgetPrivate</class>
+ <widget class="QWidget" name="SozaiWidgetPrivate">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>512</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="bgButton">
+       <property name="text">
+        <string>背景</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="chButton">
+       <property name="text">
+        <string>立绘</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="itemButton">
+       <property name="text">
+        <string>物件</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="bgmButton">
+       <property name="text">
+        <string>背景音乐</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="seButton">
+       <property name="text">
+        <string>音效</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QStackedWidget" name="stackedWidget">
+     <property name="currentIndex">
+      <number>3</number>
+     </property>
+     <widget class="QWidget" name="page">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="ImageSelectDialog" name="bgImageSelectWidget"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="page_2">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="ImageSelectDialog" name="chImageSelectWidget"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="page_3">
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="ImageSelectDialog" name="itemImageSelectWidget"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="page_4">
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="SoundSelectDialog" name="bgmSoundSelectWidget"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="page_5">
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="SoundSelectDialog" name="seSoundSelectWidget"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ImageSelectDialog</class>
+   <extends>QListWidget</extends>
+   <header>ImageSelectDialog.h</header>
+  </customwidget>
+  <customwidget>
+   <class>SoundSelectDialog</class>
+   <extends>QListWidget</extends>
+   <header>SoundSelectDialog.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
