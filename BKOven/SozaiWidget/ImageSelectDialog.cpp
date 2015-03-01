@@ -36,15 +36,21 @@ ImageSelectDialog::ImageSelectDialog(QWidget *parent) :
 
     //设置右键菜单
     rMenu = new QMenu(this);
-    QAction* action_add = new QAction("添加",rMenu);
+    QAction* action_quickadd = new QAction("一键登场",rMenu);
+    QAction* action_add = new QAction("登场",rMenu);
     QAction* action_open = new QAction("打开",rMenu);
+    fileActions.append(action_quickadd);
     fileActions.append(action_add);
     folderActions.append(action_open);
 
     //菜单项的点击响应
-    connect(action_add,&QAction::triggered,[this](bool checked){
+    connect(action_quickadd,&QAction::triggered,[this](bool){
         qDebug() << resourceFolder << this->currentItem()->text() << this->currentItem()->data(Qt::UserRole+1).toString() << endl;
-        //emit imageSelected(item->data(Qt::UserRole+1).toString());
+        emit quickAdd(resourceFolder,this->currentItem()->text(),this->currentItem()->data(Qt::UserRole+1).toString());
+    });
+    connect(action_add,&QAction::triggered,[this](bool){
+        qDebug() << resourceFolder << this->currentItem()->text() << this->currentItem()->data(Qt::UserRole+1).toString() << endl;
+        emit add(resourceFolder,this->currentItem()->text(),this->currentItem()->data(Qt::UserRole+1).toString());
     });
     connect(action_open,&QAction::triggered,[this](bool){
         emit itemDoubleClicked(currentItem());

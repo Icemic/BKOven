@@ -33,7 +33,8 @@ protected:
     virtual void contextMenuEvent(QContextMenuEvent *) override;
 
 signals:
-    void soundSelected(QString absoluteFilePath);
+    void quickAdd(const QString &type, const QString &name, const QString &filePath);
+    void add(const QString &type, const QString &name, const QString &filePath);
 };
 
 #endif // SOUNDSELECTDIALOG_H

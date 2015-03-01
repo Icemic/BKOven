@@ -8,9 +8,7 @@ SozaiWidget::SozaiWidget()
 
 void SozaiWidget::test()
 {
-    SozaiWidget::init();
-    _widget->show();
-    qDebug() << "SozaiWidget: oka!" << endl;
+    qDebug() << "SozaiWidget: ok!" << endl;
 
 }
 

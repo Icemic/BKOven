@@ -1,5 +1,8 @@
 ﻿#include "SozaiWidgetPrivate.h"
 #include "ui_SozaiWidgetPrivate.h"
+#include "ImageSelectDialog.h"
+#include "SoundSelectDialog.h"
+#include "AddConfigDialog.h"
 #include <QFile>
 #include <QDebug>
 
@@ -25,6 +28,7 @@ SozaiWidgetPrivate::SozaiWidgetPrivate(QWidget *parent) :
         ui->stackedWidget->setCurrentIndex(4);
     });
 
+    setupConnections();
 }
 
 SozaiWidgetPrivate::~SozaiWidgetPrivate()
@@ -44,4 +48,34 @@ void SozaiWidgetPrivate::open(const QString &path)
     ui->itemImageSelectWidget->load(path,"item",doc["item"].toBkeDic());
 
     ui->bgmSoundSelectWidget->load(path,"bgm",doc["bgm"].toBkeDic());
+    ui->seSoundSelectWidget->load(path,"se",doc["se"].toBkeDic());
+}
+
+void SozaiWidgetPrivate::setupConnections()
+{
+    connect(ui->bgImageSelectWidget,SIGNAL(quickAdd(QString,QString,QString)),this,SLOT(on_quickAdd(QString,QString,QString)));
+    connect(ui->bgImageSelectWidget,SIGNAL(add(QString,QString,QString)),this,SLOT(on_add(QString,QString,QString)));
+    connect(ui->chImageSelectWidget,SIGNAL(quickAdd(QString,QString,QString)),this,SLOT(on_quickAdd(QString,QString,QString)));
+    connect(ui->chImageSelectWidget,SIGNAL(add(QString,QString,QString)),this,SLOT(on_add(QString,QString,QString)));
+    connect(ui->itemImageSelectWidget,SIGNAL(quickAdd(QString,QString,QString)),this,SLOT(on_quickAdd(QString,QString,QString)));
+    connect(ui->itemImageSelectWidget,SIGNAL(add(QString,QString,QString)),this,SLOT(on_add(QString,QString,QString)));
+    connect(ui->bgmSoundSelectWidget,SIGNAL(quickAdd(QString,QString,QString)),this,SLOT(on_quickAdd(QString,QString,QString)));
+    connect(ui->bgmSoundSelectWidget,SIGNAL(add(QString,QString,QString)),this,SLOT(on_add(QString,QString,QString)));
+    connect(ui->seSoundSelectWidget,SIGNAL(quickAdd(QString,QString,QString)),this,SLOT(on_quickAdd(QString,QString,QString)));
+    connect(ui->seSoundSelectWidget,SIGNAL(add(QString,QString,QString)),this,SLOT(on_add(QString,QString,QString)));
+}
+
+void SozaiWidgetPrivate::on_quickAdd(const QString &type, const QString &name, const QString &filePath)
+{
+    //快速添加的默认设置，淡入0-255 800ms
+    emit fileAdd(type,name,filePath,true);
+}
+void SozaiWidgetPrivate::on_add(const QString &type, const QString &name, const QString &filePath)
+{
+    bool fade;
+    int from,to,msec;
+    AddConfigDialog addDialog;
+    if(addDialog.exec(fade,from,to,msec)){
+        emit fileAdd(type,name,filePath,fade,from,to,msec);
+    }
 }

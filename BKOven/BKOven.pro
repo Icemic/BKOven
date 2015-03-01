@@ -10,6 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = BKOven
 TEMPLATE = app
+VERSION = "0.0.0.1"
 
 
 SOURCES += main.cpp\
@@ -17,16 +18,35 @@ SOURCES += main.cpp\
     SozaiWidget/ImageSelectDialog.cpp \
     SozaiWidget/SoundSelectDialog.cpp \
     SozaiWidget/SozaiWidget.cpp \
-    SozaiWidget/SozaiWidgetPrivate.cpp
+    SozaiWidget/SozaiWidgetPrivate.cpp \
+    StageWidget/StageWidget.cpp \
+    StageWidget/StageWidgetPrivate.cpp \
+    SozaiWidget/AddConfigDialog.cpp \
+    ScriptWidget/ScriptWidget.cpp \
+    ScriptWidget/ScriptWidgetPrivate.cpp \
+    ScriptWidget/ScriptTreeWidget.cpp \
+    ScriptWidget/ScriptListWidget.cpp \
+    ScriptWidget/ScriptListWidgetItem.cpp
 
 HEADERS  += mainwindow.h \
     SozaiWidget/ImageSelectDialog.h \
     SozaiWidget/SoundSelectDialog.h \
     SozaiWidget/SozaiWidget.h \
-    SozaiWidget/SozaiWidgetPrivate.h
+    SozaiWidget/SozaiWidgetPrivate.h \
+    StageWidget/StageWidget.h \
+    StageWidget/StageWidgetPrivate.h \
+    SozaiWidget/AddConfigDialog.h \
+    ScriptWidget/ScriptWidget.h \
+    ScriptWidget/ScriptWidgetPrivate.h \
+    ScriptWidget/ScriptTreeWidget.h \
+    ScriptWidget/ScriptListWidget.h \
+    ScriptWidget/ScriptListWidgetItem.h
 
 FORMS    += mainwindow.ui \
-    SozaiWidget/SozaiWidgetPrivate.ui
+    SozaiWidget/SozaiWidgetPrivate.ui \
+    StageWidget/StageWidgetPrivate.ui \
+    SozaiWidget/AddConfigDialog.ui \
+    ScriptWidget/ScriptWidgetPrivate.ui
 
 CONFIG += c++11
 

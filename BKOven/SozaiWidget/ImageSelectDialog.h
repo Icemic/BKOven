@@ -38,7 +38,8 @@ protected:
 
 
 signals:
-    //void imageSelected(QString absoluteFilePath);
+    void quickAdd(const QString &type, const QString &name, const QString &filePath);
+    void add(const QString &type, const QString &name, const QString &filePath);
 };
 
 #endif // IMAGESELECTDIALOG_H
