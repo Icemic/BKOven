@@ -51,6 +51,7 @@ QBkeVariable ScriptListWidget::scriptData()
 
 void ScriptListWidget::setScriptData(const QBkeArray &arr)
 {
+    this->clear();
     for(int i=0;i<arr.count();i++)
     {
         QBkeVariable itemVar = arr.at(i);

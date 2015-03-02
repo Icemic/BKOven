@@ -4,10 +4,10 @@
 #include "ParserHelper.h"
 #include <QDir>
 #include <QDebug>
-
+#include "../shared/vshack.h"
 
 QString NewProjectWizard::_projectFilePath = "";
-
+QString NewProjectWizard::_projectPath = "";
 NewProjectWizard::NewProjectWizard()
 {
 
@@ -60,6 +60,7 @@ bool NewProjectWizard::open()
         f.close();
 
         _projectFilePath = dir.absoluteFilePath("myGame.bk");
+        _projectPath = dir.absolutePath();
 
         return true;
     }
@@ -79,3 +80,7 @@ QString NewProjectWizard::projectFilePath()
     return _projectFilePath;
 }
 
+QString NewProjectWizard::projectPath()
+{
+    return _projectPath;
+}

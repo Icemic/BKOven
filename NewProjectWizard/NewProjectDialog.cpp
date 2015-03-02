@@ -1,8 +1,8 @@
-#include "NewProjectDialog.h"
+﻿#include "NewProjectDialog.h"
 #include "ui_NewProjectDialog.h"
 #include <QFileDialog>
 #include <QDebug>
-
+#include "../shared/vshack.h"
 
 NewProjectDialog::NewProjectDialog(QWidget *parent) :
     QDialog(parent),

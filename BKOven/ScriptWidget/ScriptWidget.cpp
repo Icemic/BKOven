@@ -27,3 +27,17 @@ ScriptWidgetPrivate* ScriptWidget::widget()
     return _widget;
 }
 
+void ScriptWidget::open(const QString &projectPath)
+{
+    _widget->open(projectPath);
+}
+
+void ScriptWidget::save()
+{
+    _widget->save();
+}
+
+bool ScriptWidget::addScript(const QString &type, const QString &description, const QBkeVariable &data)
+{
+    return _widget->addScript(type,description,data);
+}

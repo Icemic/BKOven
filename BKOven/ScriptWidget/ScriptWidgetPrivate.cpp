@@ -14,7 +14,8 @@ ScriptWidgetPrivate::ScriptWidgetPrivate(QWidget *parent) :
     //加载剧本
     connect(ui->scriptTreeWidget,&ScriptTreeWidget::requestShowScripts,[=](const QString &uuid){
         //缓存当前
-        sceneScripts[ui->scriptListWidget->uuid()] = ui->scriptListWidget->scriptData();
+        if(!ui->scriptListWidget->uuid().isEmpty())
+            sceneScripts[ui->scriptListWidget->uuid()] = ui->scriptListWidget->scriptData();
 
         //检查要读取的内容是否在缓存中已有
         if(sceneScripts.contains(uuid))
@@ -31,6 +32,9 @@ ScriptWidgetPrivate::ScriptWidgetPrivate(QWidget *parent) :
             f.close();
             ui->scriptListWidget->setScriptData(doc.toBkeArray());
         }
+        ui->scriptListWidget->setUuid(uuid);
+        ui->scriptListWidget->setEnabled(true);
+        ui->tabWidget->setCurrentIndex(1);
     });
 
 }
@@ -51,10 +55,11 @@ void ScriptWidgetPrivate::open(const QString &path)
     f.open(QIODevice::ReadOnly | QIODevice::Text);
     doc.loadFromBinary(f.readAll());
     f.close();
-    //加载
+    //清空原有并加载
     ui->scriptTreeWidget->setScriptData(doc.toBkeDic());
     //切换到幕与场景tab
     ui->tabWidget->setCurrentIndex(0);
+    ui->scriptTreeWidget->setEnabled(true);
 }
 
 void ScriptWidgetPrivate::save()
@@ -74,7 +79,8 @@ void ScriptWidgetPrivate::save()
     QDir dir(projectPath);
     dir.mkpath("config/Scene");
     //将最后的缓存写入
-    sceneScripts[ui->scriptListWidget->uuid()] = ui->scriptListWidget->scriptData();
+    if(!ui->scriptListWidget->uuid().isEmpty())
+        sceneScripts[ui->scriptListWidget->uuid()] = ui->scriptListWidget->scriptData();
     //开始保存
     QBkeDictionary::const_iterator ite;
     for(ite=sceneScripts.cbegin();ite!=sceneScripts.cend();ite++)
@@ -83,5 +89,16 @@ void ScriptWidgetPrivate::save()
         f.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text);
         f.write(ite.value().saveToBinary());
         f.close();
+    }
+}
+
+bool ScriptWidgetPrivate::addScript(const QString &type, const QString &description, const QBkeVariable &data)
+{
+    if(!ui->scriptListWidget->isEnabled())
+        return false;
+    else{
+        ui->scriptListWidget->addScript(type,description,data);
+        ui->tabWidget->setCurrentIndex(1);
+        return true;
     }
 }

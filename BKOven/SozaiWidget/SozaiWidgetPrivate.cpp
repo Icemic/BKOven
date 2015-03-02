@@ -11,6 +11,7 @@ SozaiWidgetPrivate::SozaiWidgetPrivate(QWidget *parent) :
     ui(new Ui::SozaiWidgetPrivate)
 {
     ui->setupUi(this);
+    ui->stackedWidget->setContentsMargins(0,0,0,0);
 
     connect(ui->bgButton,&QPushButton::clicked,[=](){
         ui->stackedWidget->setCurrentIndex(0);

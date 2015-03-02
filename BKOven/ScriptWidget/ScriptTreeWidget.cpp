@@ -154,6 +154,7 @@ QBkeVariable ScriptTreeWidget::scriptData()
 
 void ScriptTreeWidget::setScriptData(const QBkeDictionary &dic)
 {
+    this->clear();
     QBkeDictionary::const_iterator ite;
     for(ite=dic.cbegin();ite!=dic.cend();ite++)
     {

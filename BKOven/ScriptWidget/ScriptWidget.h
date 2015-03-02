@@ -12,6 +12,11 @@ public:
     static void init();
     static ScriptWidgetPrivate* widget();
 
+    static void open(const QString &projectPath);
+    static void save();
+
+    static bool addScript(const QString &type, const QString &description, const QBkeVariable &data);
+
 private:
     static ScriptWidgetPrivate* _widget;
 
