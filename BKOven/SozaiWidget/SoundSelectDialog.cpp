@@ -18,7 +18,7 @@ SoundSelectDialog::SoundSelectDialog(QWidget *parent) :
     //设置右键菜单
     rMenu = new QMenu(this);
     QAction* action_quickadd = new QAction("一键登场",rMenu);
-    QAction* action_add = new QAction("一键登场",rMenu);
+    QAction* action_add = new QAction("登场",rMenu);
     QAction* action_open = new QAction("打开",rMenu);
     fileActions.append(action_quickadd);
     fileActions.append(action_add);
@@ -26,10 +26,16 @@ SoundSelectDialog::SoundSelectDialog(QWidget *parent) :
 
     //菜单项的点击响应
     connect(action_quickadd,&QAction::triggered,[this](bool){
-        emit quickAdd(resourceFolder,this->currentItem()->text(),this->currentItem()->data(Qt::UserRole+1).toString());
+        QString path = nodeStack.join(" ");
+        if(!path.isEmpty())
+            path += " ";
+        emit quickAdd(resourceFolder,path+this->currentItem()->text(),this->currentItem()->data(Qt::UserRole+1).toString());
     });
     connect(action_add,&QAction::triggered,[this](bool){
-        emit quickAdd(resourceFolder,this->currentItem()->text(),this->currentItem()->data(Qt::UserRole+1).toString());
+        QString path = nodeStack.join(" ");
+        if(!path.isEmpty())
+            path += " ";
+        emit quickAdd(resourceFolder,path+this->currentItem()->text(),this->currentItem()->data(Qt::UserRole+1).toString());
     });
     connect(action_open,&QAction::triggered,[this](bool){
         emit itemDoubleClicked(currentItem());

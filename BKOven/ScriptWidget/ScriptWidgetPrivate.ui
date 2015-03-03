@@ -80,7 +80,11 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="ScriptListWidget" name="scriptListWidget"/>
+        <widget class="ScriptListWidget" name="scriptListWidget">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

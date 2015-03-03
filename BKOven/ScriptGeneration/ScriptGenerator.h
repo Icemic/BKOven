@@ -1,8 +1,7 @@
 ﻿#ifndef SCRIPTGENERATOR_H
 #define SCRIPTGENERATOR_H
-#include "SozaiWidget/SozaiWidget.h"
-#include "StageWidget/StageWidget.h"
-#include "StageWidget/StageWidget.h"
+#include <QObject>
+#include "ParserHelper.h"
 
 class ScriptGenerator: QObject
 {
@@ -11,8 +10,13 @@ public:
     ScriptGenerator();
     ~ScriptGenerator();
 
+    static void init();
+
+private:
+    static ScriptGenerator* self;
+
 private slots:
-    void handleQuickAdd(const QString &type, const QString &name, const QString &filePath, bool fade, int from, int to, int msec);
+    void handleQuickAdd(const QString &type, const QString &name, const QString &filePath, const QBkeVariable &data);
 };
 
 #endif // SCRIPTGENERATOR_H

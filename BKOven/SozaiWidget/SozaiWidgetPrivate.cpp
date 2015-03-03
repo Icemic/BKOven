@@ -2,7 +2,10 @@
 #include "ui_SozaiWidgetPrivate.h"
 #include "ImageSelectDialog.h"
 #include "SoundSelectDialog.h"
-#include "AddConfigDialog.h"
+#include "BackgroundAddDialog.h"
+#include "CharacterAddDialog.h"
+#include "ItemAddDialog.h"
+#include "SoundAddDialog.h"
 #include <QFile>
 #include <QDebug>
 
@@ -69,14 +72,73 @@ void SozaiWidgetPrivate::setupConnections()
 void SozaiWidgetPrivate::on_quickAdd(const QString &type, const QString &name, const QString &filePath)
 {
     //快速添加的默认设置，淡入0-255 800ms
-    emit fileAdd(type,name,filePath,true);
+    QBkeVariable data = QBkeVariable::dic();
+    data.insert("fade",true);
+    data.insert("from",0);
+    data.insert("to",255);
+    data.insert("msec",800);
+    if(type=="character")
+    {
+        data.insert("freepos",false);
+        data.insert("pos",4);
+    }
+    emit fileAdd(type,name,filePath,data);
 }
 void SozaiWidgetPrivate::on_add(const QString &type, const QString &name, const QString &filePath)
 {
-    bool fade;
-    int from,to,msec;
-    AddConfigDialog addDialog;
-    if(addDialog.exec(fade,from,to,msec)){
-        emit fileAdd(type,name,filePath,fade,from,to,msec);
+    bool fade,freepos;
+    int from,to,msec,pos;
+    QBkeVariable data = QBkeVariable::dic();
+    if(type=="background")
+    {
+        BackgroundAddDialog addDialog;
+        if(addDialog.exec(fade,from,to,msec))
+        {
+            data.insert("fade",fade);
+            data.insert("from",from);
+            data.insert("to",to);
+            data.insert("msec",msec);
+            emit fileAdd(type,name,filePath,data);
+        }
     }
+    else if(type=="character")
+    {
+        CharacterAddDialog addDialog;
+        if(addDialog.exec(freepos,pos,fade,from,to,msec))
+        {
+            data.insert("freepos",freepos);
+            data.insert("pos",pos);
+            data.insert("fade",fade);
+            data.insert("from",from);
+            data.insert("to",to);
+            data.insert("msec",msec);
+            emit fileAdd(type,name,filePath,data);
+        }
+    }
+    else if(type=="item")
+    {
+        ItemAddDialog addDialog;
+        if(addDialog.exec(fade,from,to,msec))
+        {
+            data.insert("fade",fade);
+            data.insert("from",from);
+            data.insert("to",to);
+            data.insert("msec",msec);
+            emit fileAdd(type,name,filePath,data);
+        }
+    }
+    else if(type=="bgm" || type=="se")
+    {
+        SoundAddDialog addDialog;
+        if(addDialog.exec(fade,from,to,msec))
+        {
+            data.insert("fade",fade);
+            data.insert("from",from);
+            data.insert("to",to);
+            data.insert("msec",msec);
+            emit fileAdd(type,name,filePath,data);
+        }
+    }
+    else
+        qWarning() << "SozaiWidgetPrivate: 未知的类型 "+type << endl;
 }

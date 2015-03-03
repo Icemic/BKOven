@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AddConfigDialog</class>
- <widget class="QDialog" name="AddConfigDialog">
+ <class>ItemAddDialog</class>
+ <widget class="QDialog" name="ItemAddDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>261</width>
-    <height>146</height>
+    <width>260</width>
+    <height>143</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
@@ -16,9 +22,9 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>111</y>
-     <width>201</width>
+     <x>60</x>
+     <y>110</y>
+     <width>191</width>
      <height>32</height>
     </rect>
    </property>
@@ -29,7 +35,7 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -42,7 +48,7 @@
     <item>
      <widget class="QRadioButton" name="radioButton_show">
       <property name="text">
-       <string>直接出现/播放</string>
+       <string>直接出现</string>
       </property>
       <property name="checked">
        <bool>false</bool>
@@ -262,5 +268,38 @@
   </widget>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>ItemAddDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>ItemAddDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

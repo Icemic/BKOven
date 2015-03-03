@@ -2,6 +2,7 @@
 #define SCRIPTLISTWIDGET_H
 
 #include <QListWidget>
+#include <QMenu>
 #include "ScriptListWidgetItem.h"
 #include "ParserHelper.h"
 
@@ -12,7 +13,7 @@ public:
     explicit ScriptListWidget(QWidget* parent=0);
     ~ScriptListWidget();
 
-    void addScript(const QString &type, const QString &description, const QBkeVariable &data);
+    void addScript(const QString &type, const QBkeVariable &data);
 
     ScriptListWidgetItem* script(int row);
 
@@ -21,8 +22,14 @@ public:
     void setUuid(const QString &uuid);
     QString uuid();
 
+protected:
+    virtual void contextMenuEvent(QContextMenuEvent *) override;
+
 private:
     QString _uuid;
+    QMenu* rMenu;
+    QListWidgetItem* insertPoint = nullptr;
+    QList<QAction*> itemMenuActions;
 
 signals:
     void scriptClicked(const QString &type, const QString &description, QBkeVariableRef data);

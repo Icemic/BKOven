@@ -15,7 +15,7 @@ public:
     static void open(const QString &projectPath);
     static void save();
 
-    static bool addScript(const QString &type, const QString &description, const QBkeVariable &data);
+    static bool addScript(const QString &type, const QBkeVariable &data);
 
 private:
     static ScriptWidgetPrivate* _widget;

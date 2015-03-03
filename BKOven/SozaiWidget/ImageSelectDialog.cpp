@@ -45,12 +45,16 @@ ImageSelectDialog::ImageSelectDialog(QWidget *parent) :
 
     //菜单项的点击响应
     connect(action_quickadd,&QAction::triggered,[this](bool){
-        qDebug() << resourceFolder << this->currentItem()->text() << this->currentItem()->data(Qt::UserRole+1).toString() << endl;
-        emit quickAdd(resourceFolder,this->currentItem()->text(),this->currentItem()->data(Qt::UserRole+1).toString());
+        QString path = nodeStack.join(" ");
+        if(!path.isEmpty())
+            path += " ";
+        emit quickAdd(resourceFolder,path+this->currentItem()->text(),this->currentItem()->data(Qt::UserRole+1).toString());
     });
     connect(action_add,&QAction::triggered,[this](bool){
-        qDebug() << resourceFolder << this->currentItem()->text() << this->currentItem()->data(Qt::UserRole+1).toString() << endl;
-        emit add(resourceFolder,this->currentItem()->text(),this->currentItem()->data(Qt::UserRole+1).toString());
+        QString path = nodeStack.join(" ");
+        if(!path.isEmpty())
+            path += " ";
+        emit add(resourceFolder,path+this->currentItem()->text(),this->currentItem()->data(Qt::UserRole+1).toString());
     });
     connect(action_open,&QAction::triggered,[this](bool){
         emit itemDoubleClicked(currentItem());

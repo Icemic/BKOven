@@ -21,13 +21,17 @@ SOURCES += main.cpp\
     SozaiWidget/SozaiWidgetPrivate.cpp \
     StageWidget/StageWidget.cpp \
     StageWidget/StageWidgetPrivate.cpp \
-    SozaiWidget/AddConfigDialog.cpp \
     ScriptWidget/ScriptWidget.cpp \
     ScriptWidget/ScriptWidgetPrivate.cpp \
     ScriptWidget/ScriptTreeWidget.cpp \
     ScriptWidget/ScriptListWidget.cpp \
     ScriptWidget/ScriptListWidgetItem.cpp \
-    ScriptGeneration/ScriptGenerator.cpp
+    ScriptGeneration/ScriptGenerator.cpp \
+    ScriptGeneration/DescriptionGenerator.cpp \
+    SozaiWidget/CharacterAddDialog.cpp \
+    SozaiWidget/BackgroundAddDialog.cpp \
+    SozaiWidget/ItemAddDialog.cpp \
+    SozaiWidget/SoundAddDialog.cpp
 
 HEADERS  += mainwindow.h \
     SozaiWidget/ImageSelectDialog.h \
@@ -36,20 +40,27 @@ HEADERS  += mainwindow.h \
     SozaiWidget/SozaiWidgetPrivate.h \
     StageWidget/StageWidget.h \
     StageWidget/StageWidgetPrivate.h \
-    SozaiWidget/AddConfigDialog.h \
     ScriptWidget/ScriptWidget.h \
     ScriptWidget/ScriptWidgetPrivate.h \
     ScriptWidget/ScriptTreeWidget.h \
     ScriptWidget/ScriptListWidget.h \
     ScriptWidget/ScriptListWidgetItem.h \
     stable.h \
-    ScriptGeneration/ScriptGenerator.h
+    ScriptGeneration/ScriptGenerator.h \
+    ScriptGeneration/DescriptionGenerator.h \
+    SozaiWidget/CharacterAddDialog.h \
+    SozaiWidget/BackgroundAddDialog.h \
+    SozaiWidget/ItemAddDialog.h \
+    SozaiWidget/SoundAddDialog.h
 
 FORMS    += mainwindow.ui \
     SozaiWidget/SozaiWidgetPrivate.ui \
     StageWidget/StageWidgetPrivate.ui \
-    SozaiWidget/AddConfigDialog.ui \
-    ScriptWidget/ScriptWidgetPrivate.ui
+    ScriptWidget/ScriptWidgetPrivate.ui \
+    SozaiWidget/CharacterAddDialog.ui \
+    SozaiWidget/BackgroundAddDialog.ui \
+    SozaiWidget/ItemAddDialog.ui \
+    SozaiWidget/SoundAddDialog.ui
 
 CONFIG += c++11
 

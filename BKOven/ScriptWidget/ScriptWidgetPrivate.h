@@ -19,7 +19,7 @@ public:
     void open(const QString &path);
     void save();
 
-    bool addScript(const QString &type, const QString &description, const QBkeVariable &data);
+    bool addScript(const QString &type, const QBkeVariable &data);
 
 
 private:

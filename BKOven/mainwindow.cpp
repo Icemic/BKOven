@@ -3,6 +3,7 @@
 #include "SozaiWidget/SozaiWidget.h"
 #include "StageWidget/StageWidget.h"
 #include "ScriptWidget/ScriptWidget.h"
+#include "ScriptGeneration/ScriptGenerator.h"
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -120,6 +121,12 @@ MainWindow::MainWindow(QWidget *parent) :
     hsplitter->setStretchFactor(1,1);
     mainlayer->addWidget(hsplitter);
     ui->centralWidget->setLayout(mainlayer);
+
+    ScriptGenerator::init();
+
+#ifdef QT_DEBUG
+    this->openProject("D:/workspace/Git/BKOven测试/test");
+#endif
 }
 
 MainWindow::~MainWindow()

@@ -1,21 +1,19 @@
-﻿#include "AddConfigDialog.h"
-#include "ui_AddConfigDialog.h"
+﻿#include "ItemAddDialog.h"
+#include "ui_ItemAddDialog.h"
 
-AddConfigDialog::AddConfigDialog(QWidget *parent) :
+ItemAddDialog::ItemAddDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::AddConfigDialog)
+    ui(new Ui::ItemAddDialog)
 {
     ui->setupUi(this);
-
-
 }
 
-AddConfigDialog::~AddConfigDialog()
+ItemAddDialog::~ItemAddDialog()
 {
     delete ui;
 }
 
-bool AddConfigDialog::exec(bool &fade, int &from, int &to, int &msec)
+bool ItemAddDialog::exec(bool &fade, int &from, int &to, int &msec)
 {
     if(QDialog::exec()){
         fade = ui->radioButton_fade->isChecked();

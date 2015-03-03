@@ -37,7 +37,7 @@ void ScriptWidget::save()
     _widget->save();
 }
 
-bool ScriptWidget::addScript(const QString &type, const QString &description, const QBkeVariable &data)
+bool ScriptWidget::addScript(const QString &type, const QBkeVariable &data)
 {
-    return _widget->addScript(type,description,data);
+    return _widget->addScript(type,data);
 }

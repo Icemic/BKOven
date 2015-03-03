@@ -92,12 +92,12 @@ void ScriptWidgetPrivate::save()
     }
 }
 
-bool ScriptWidgetPrivate::addScript(const QString &type, const QString &description, const QBkeVariable &data)
+bool ScriptWidgetPrivate::addScript(const QString &type, const QBkeVariable &data)
 {
     if(!ui->scriptListWidget->isEnabled())
         return false;
     else{
-        ui->scriptListWidget->addScript(type,description,data);
+        ui->scriptListWidget->addScript(type,data);
         ui->tabWidget->setCurrentIndex(1);
         return true;
     }
