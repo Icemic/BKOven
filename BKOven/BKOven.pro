@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     SozaiWidget/CharacterAddDialog.cpp \
     SozaiWidget/BackgroundAddDialog.cpp \
     SozaiWidget/ItemAddDialog.cpp \
-    SozaiWidget/SoundAddDialog.cpp
+    SozaiWidget/SoundAddDialog.cpp \
+    ScriptGeneration/ScriptStatus.cpp
 
 HEADERS  += mainwindow.h \
     SozaiWidget/ImageSelectDialog.h \
@@ -51,7 +52,8 @@ HEADERS  += mainwindow.h \
     SozaiWidget/CharacterAddDialog.h \
     SozaiWidget/BackgroundAddDialog.h \
     SozaiWidget/ItemAddDialog.h \
-    SozaiWidget/SoundAddDialog.h
+    SozaiWidget/SoundAddDialog.h \
+    ScriptGeneration/ScriptStatus.h
 
 FORMS    += mainwindow.ui \
     SozaiWidget/SozaiWidgetPrivate.ui \

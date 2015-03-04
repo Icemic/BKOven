@@ -242,6 +242,11 @@ void QBkeVariable::loadClosureDicFromString(const QString &s)
     clo->release();
 }
 
+QBkeVariable QBkeVariable::clone()
+{
+    return QBkeVariable(_var->clone());
+}
+
 void QBkeVariable::setVoid()
 {
     _var->setVoid();
@@ -630,9 +635,9 @@ bool QBkeVariable::isNull() const
     return _var->isVoid();
 }
 
-QString QBkeVariable::saveToString() const
+QString QBkeVariable::saveToString(bool format) const
 {
-    return QString::fromStdWString(_var->save(false));
+    return QString::fromStdWString(_var->save(format));
 }
 
 QBkeVariable QBkeVariable::array(int count)

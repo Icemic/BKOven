@@ -7,43 +7,43 @@ ScriptListWidget::ScriptListWidget(QWidget *parent):
 {
     rMenu = new QMenu();
     QAction* item_delete = new QAction(tr("删除选中"),rMenu);
-    QAction* item_insertpoint = new QAction(tr("设为插入点"),rMenu);
-    item_insertpoint->setToolTip(tr("设为插入点后，新的剧本项目将插入到此项之后，而非剧本末端。"));
     itemMenuActions.append(item_delete);
-    itemMenuActions.append(item_insertpoint);
 
     connect(item_delete,&QAction::triggered,[=](){
         int result = QMessageBox::question(this,tr("删除"),tr("删除后不可还原，确认删除吗？"),QMessageBox::Yes,QMessageBox::No);
         if(result==QMessageBox::Yes){
             QList<QListWidgetItem*> selectedItems = this->selectedItems();
+            int start = this->row(selectedItems.at(0));
+            int count = selectedItems.count();
             for(int i=0;i<selectedItems.length();i++)
             {
                 QListWidgetItem* item = selectedItems.at(i);
                 this->takeItem(this->row(item));
-                if(item==insertPoint)
-                    insertPoint = nullptr;
                 delete item;
             }
+            emit scriptDeleted(start,count);
         }
     });
 
-    insertPoint = nullptr;
-    connect(item_insertpoint,&QAction::triggered,[=](){
-        if(insertPoint!=nullptr)
-            insertPoint->setBackgroundColor(QColor("transparent"));
-        insertPoint = this->currentItem();
-        insertPoint->setBackgroundColor(QColor("#9fc888"));
+    //选中项改变底色
+    connect(this,&ScriptListWidget::currentItemChanged,[=](QListWidgetItem* current, QListWidgetItem* previous){
+        if(previous!=nullptr)
+            previous->setBackgroundColor(QColor("transparent"));
+        if(current!=nullptr)
+        current->setBackgroundColor(QColor("#9fc888"));
     });
 
 
     connect(this,&ScriptListWidget::itemClicked,[=](QListWidgetItem* item){
+        int row = this->row(item);
         ScriptListWidgetItem* sItem = static_cast<ScriptListWidgetItem*>(item);
-        emit scriptClicked(sItem->type(),sItem->description(),sItem->scriptDataRef());
+        emit scriptClicked(sItem->type(),sItem->scriptDataRef(),row);
     });
 
     connect(this,&ScriptListWidget::itemDoubleClicked,[=](QListWidgetItem* item){
+        int row = this->row(item);
         ScriptListWidgetItem* sItem = static_cast<ScriptListWidgetItem*>(item);
-        emit scriptDoubleClicked(sItem->type(),sItem->description(),sItem->scriptDataRef());
+        emit scriptDoubleClicked(sItem->type(),sItem->scriptDataRef(),row);
     });
 
 
@@ -63,16 +63,22 @@ void ScriptListWidget::contextMenuEvent(QContextMenuEvent *)
         rMenu->exec(itemMenuActions,QCursor::pos());
 }
 
+//外部调用接口，触发信号
 void ScriptListWidget::addScript(const QString &type, const QBkeVariable &data)
+{
+    _addScript(type,data);
+    emit scriptAdded(currentRow());
+}
+
+//内部调用接口，不触发脚本添加信号
+void ScriptListWidget::_addScript(const QString &type, const QBkeVariable &data)
 {
     ScriptListWidgetItem* item = new ScriptListWidgetItem();
     item->setType(type);
     item->setDescription(DescriptionGenerator::description(type,data));
     item->setScriptData(data);
-    if(insertPoint==nullptr)
-        this->addItem(item);
-    else
-        this->insertItem(row(insertPoint)+1,item);
+    this->insertItem(currentRow()+1,item);
+    setCurrentRow(currentRow()+1);
 }
 
 ScriptListWidgetItem* ScriptListWidget::script(int row)
@@ -80,6 +86,13 @@ ScriptListWidgetItem* ScriptListWidget::script(int row)
     return static_cast<ScriptListWidgetItem*>(item(row));
 }
 
+void ScriptListWidget::freshDescription(int row)
+{
+    ScriptListWidgetItem* item = script(row);
+    item->setDescription(DescriptionGenerator::description(item->type(),item->scriptData()));
+}
+
+//取得全部脚本数据（数组）
 QBkeVariable ScriptListWidget::scriptData()
 {
     QBkeVariable arr = QBkeVariable::array(0);
@@ -94,16 +107,18 @@ QBkeVariable ScriptListWidget::scriptData()
     return arr;
 }
 
+//置全部脚本数据（数组）
 void ScriptListWidget::setScriptData(const QBkeArray &arr)
 {
     this->clear();
     for(int i=0;i<arr.count();i++)
     {
         QBkeVariable itemVar = arr.at(i);
-        this->addScript(itemVar.value("type").toString(),itemVar.value("data").value());
+        this->_addScript(itemVar.value("type").toString(),itemVar.value("data").value());
     }
 }
 
+//标记当前显示的数据的UUID
 void ScriptListWidget::setUuid(const QString &uuid)
 {
     _uuid = uuid;

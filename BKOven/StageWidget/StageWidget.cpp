@@ -26,3 +26,8 @@ StageWidgetPrivate* StageWidget::widget()
 {
     return _widget;
 }
+
+void StageWidget::setStageStatus(const QBkeVariable &data)
+{
+    _widget->setStageStatus(data);
+}

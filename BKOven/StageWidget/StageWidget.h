@@ -12,6 +12,8 @@ public:
     static void init();
     static StageWidgetPrivate *widget();
 
+    static void setStageStatus(const QBkeVariable &data);
+
 private:
     static StageWidgetPrivate* _widget;
 

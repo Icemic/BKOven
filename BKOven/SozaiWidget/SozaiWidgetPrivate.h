@@ -30,7 +30,6 @@ private slots:
     void on_quickAdd(const QString &type, const QString &name, const QString &filePath);
 
 signals:
-    //void fileAdd(const QString &type, const QString &name, const QString &filePath, bool fade=false, int from=0, int to=255, int msec=800);
     void fileAdd(const QString &type, const QString &name, const QString &filePath, const QBkeVariable &data);
 };
 

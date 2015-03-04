@@ -2,6 +2,7 @@
 #define SCRIPTWIDGETPRIVATE_H
 
 #include <QWidget>
+#include "ScriptListWidgetItem.h"
 #include "ParserHelper.h"
 
 namespace Ui {
@@ -28,6 +29,8 @@ private:
     QString projectPath;
 
     QBkeDictionary sceneScripts;
+
+    void setupConnections();
 };
 
 #endif // SCRIPTWIDGETPRIVATE_H

@@ -19,7 +19,7 @@ ImageSelectDialog::ImageSelectDialog(QWidget *parent) :
     this->setIconSize(QSize(80,80));
     this->setVerticalScrollMode(QListWidget::ScrollPerPixel);
     this->setHorizontalScrollMode(QListWidget::ScrollPerPixel);
-    this->setGridSize(QSize(85,85));
+//    this->setGridSize(QSize(85,85));
     this->setViewMode(QListWidget::IconMode);
     this->setUniformItemSizes(true);
     this->setResizeMode(QListView::Adjust);
