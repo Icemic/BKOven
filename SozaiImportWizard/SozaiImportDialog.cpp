@@ -34,6 +34,11 @@ SozaiImportDialog::SozaiImportDialog(QWidget *parent) :
                ui->originList_bgm, ui->targetList_bgm,
                ui->addClassButton_bgm, ui->removeClassButton_bgm, ui->copyClassButton_bgm, ui->clearButton_bgm,
                "背景音乐素材库", "bgm");
+    init_sound(ui->metaDataWidget_se, ui->metaDataEditButton_se, ui->metaDataResetButton_se,
+               ui->playProcessSlider_se, ui->playPostionLabel_se, ui->playButton_se, ui->pauseButton_se, ui->stopButton_se,
+               ui->originList_se, ui->targetList_se,
+               ui->addClassButton_se, ui->removeClassButton_se, ui->copyClassButton_se, ui->clearButton_se,
+               "音效素材库", "se");
 
 
     //点击确定按钮
@@ -100,6 +105,7 @@ void SozaiImportDialog::init_image(QGraphicsView* graphicsView, QListWidget* ori
         targetList->currentItem()->addChild(child);
         targetList->currentItem()->setExpanded(true);
         child->setText(0,tr(""));
+//        targetList->setCurrentItem(child);
         targetList->editItem(child);
     });
 
@@ -122,7 +128,7 @@ void SozaiImportDialog::init_image(QGraphicsView* graphicsView, QListWidget* ori
 
         //判断父级是否有子项
         QTreeWidgetItem* parent = targetList->currentItem()->parent();
-        if(parent->childCount()==0){
+        if(parent!=nullptr && parent->childCount()==0){
             parent->setText(1,tr("拖拽到此处导入素材"));
             parent->setTextColor(1,QColor("red"));
             parent->setData(0,Qt::UserRole,2);
@@ -150,6 +156,8 @@ void SozaiImportDialog::init_image(QGraphicsView* graphicsView, QListWidget* ori
 
     //originList选中项改变
     connect(originList,&QListWidget::currentTextChanged,[=](const QString &text){
+        if(text.isEmpty())
+            return;
         QGraphicsView *view = graphicsView;
         view->scene()->clear();
         view->scene()->addPixmap(QPixmap(projectDataPath+folderName+"/"+text)
@@ -281,11 +289,10 @@ void SozaiImportDialog::init_sound(QTableWidget* metaDataWidget, QPushButton* me
 
     //播放进度滑条
     QTimer *playProcessTimer = new QTimer();
-    bool playProcessSliderLock = false; //防止拖动滑条与Timer冲突
-    playProcessSliderLock = false;
-    connect(playProcessTimer,&QTimer::timeout,[=,&playProcessSliderLock](){
-        qDebug() << playProcessSliderLock;
-        if(playProcessSliderLock)
+    bool *playProcessSliderLock = new bool; //防止拖动滑条与Timer冲突
+    *playProcessSliderLock = false;
+    connect(playProcessTimer,&QTimer::timeout,[=](){
+        if(*playProcessSliderLock)
             return;
         qint64 pos = QBKAudio::getInstance()->tell(0);
         playProcessSlider->setRange(0,360000);
@@ -298,6 +305,7 @@ void SozaiImportDialog::init_sound(QTableWidget* metaDataWidget, QPushButton* me
     connect(this,&SozaiImportDialog::destroyed,[=](){
 //        mediaPlayer->stop();
 //        mediaPlayer->deleteLater();
+        delete playProcessSliderLock;
         playProcessTimer->stop();
         playProcessTimer->deleteLater();
         QBKAudio::getInstance()->stop(0);
@@ -329,13 +337,13 @@ void SozaiImportDialog::init_sound(QTableWidget* metaDataWidget, QPushButton* me
 
     //进度条拖动
     //connect(playProcessSlider,&QSlider::valueChanged,mediaPlayer,&QMediaPlayer::setPosition);
-    connect(playProcessSlider,&QSlider::sliderPressed,[&playProcessSliderLock](){
+    connect(playProcessSlider,&QSlider::sliderPressed,[playProcessSliderLock](){
         qDebug() << "aa";
-        playProcessSliderLock = true;
+        *playProcessSliderLock = true;
     });
-    connect(playProcessSlider,&QSlider::sliderReleased,[=,&playProcessSliderLock](){
+    connect(playProcessSlider,&QSlider::sliderReleased,[=](){
         QBKAudio::getInstance()->seek(0,playProcessSlider->value());
-        playProcessSliderLock = false;
+        *playProcessSliderLock = false;
     });
 
     //播放、暂停、停止按钮
@@ -384,6 +392,7 @@ void SozaiImportDialog::init_sound(QTableWidget* metaDataWidget, QPushButton* me
         targetList->currentItem()->addChild(child);
         targetList->currentItem()->setExpanded(true);
         child->setText(0,tr(""));
+//        targetList->setCurrentItem(child);
         targetList->editItem(child);
     });
 
@@ -406,7 +415,7 @@ void SozaiImportDialog::init_sound(QTableWidget* metaDataWidget, QPushButton* me
 
         //判断父级是否有子项
         QTreeWidgetItem* parent = targetList->currentItem()->parent();
-        if(parent->childCount()==0){
+        if(parent!=nullptr && parent->childCount()==0){
             parent->setText(1,tr("拖拽到此处导入素材"));
             parent->setTextColor(1,QColor("red"));
             parent->setData(0,Qt::UserRole,2);
@@ -459,12 +468,15 @@ void SozaiImportDialog::init_sound(QTableWidget* metaDataWidget, QPushButton* me
                 metaDataWidget->item(i,0)->setText("");
             }
         }
+        f.file()->clear();
     };
 
 
 
     //originList选中项改变
     connect(originList,&QListWidget::currentTextChanged,[=](const QString &text){
+        if(text.isEmpty())
+            return;
         onListTextChanged(text);
     });
 
@@ -593,7 +605,7 @@ QStringList SozaiImportDialog::getFileNamesInChildren(QTreeWidgetItem *parent)
             QTreeWidgetItem* child = parent->child(i);
             if(child->childCount()!=0)
                 list += getFileNamesInChildren(child);
-            if(child->textColor(1).red()!=255)
+            if(child->textColor(1).red()!=255 && !child->text(1).isEmpty())
                 list << child->text(1);
         }
     }
@@ -626,6 +638,7 @@ bool SozaiImportDialog::execWithPath(const QString &path)
     loadOriginListAndTargetList_image(dir,"character",ui->originList_ch,ui->targetList_ch);
     loadOriginListAndTargetList_image(dir,"item",ui->originList_item,ui->targetList_item);
     loadOriginListAndTargetList_sound(dir,"bgm",ui->originList_bgm,ui->targetList_bgm);
+    loadOriginListAndTargetList_sound(dir,"se",ui->originList_se,ui->targetList_se);
 
     //启动窗口
     return this->exec();
@@ -765,6 +778,7 @@ void SozaiImportDialog::_exportSozaiConfig()
     doc["background"] = _exportSozaiConfig_recursive(ui->targetList_bg->topLevelItem(0));
     doc["character"] = _exportSozaiConfig_recursive(ui->targetList_ch->topLevelItem(0));
     doc["bgm"] = _exportSozaiConfig_recursive(ui->targetList_bgm->topLevelItem(0));
+    doc["se"] = _exportSozaiConfig_recursive(ui->targetList_se->topLevelItem(0));
 }
 
 //从当前targetList生成parser格式的存储数据，递归，树形通用

@@ -7,4 +7,3 @@ SUBDIRS += \
     NewProjectWizard \
     SozaiImportWizard \
     Test \
-    ScenarioImportWizard
