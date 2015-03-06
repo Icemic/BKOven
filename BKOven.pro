@@ -6,4 +6,5 @@ SUBDIRS += \
     BKOven \
     NewProjectWizard \
     SozaiImportWizard \
+    PreviewWidget \
     Test \
