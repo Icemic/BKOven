@@ -13,13 +13,12 @@
 #include "CCObject.h"
 
 #include <QtCore>
-#include <QtGui>
+#include <QColor>
+#include <QImage>
 
 #include "ImageSupport.h"
 
 typedef unsigned char byte;
-#define x x
-#define QString QString
 
 class BKE_Glyph;
 class BKE_Sprite;
@@ -175,11 +174,11 @@ class BKE_FontInfo
 #define FONT_INFO_PROPERTY_DIRTY(_t, _n, _v) private: _t m_##_n = _v; public: inline void set##_n(const _t &v){if(m_##_n!=v){m_##_n = v; fontdirty=true;}} inline _t get##_n() const {return m_##_n;}
 #define FONT_INFO_PROPERTY(_t, _n, _v) private: _t m_##_n = _v; public: inline void set##_n(const _t &v){m_##_n = v;} inline _t get##_n() const {return m_##_n;}
 	
-    FONT_INFO_PROPERTY_DIRTY(QString, FontName, "");
-	FONT_INFO_PROPERTY_DIRTY(bklong, FontSize, 24);
+    FONT_INFO_PROPERTY_DIRTY(QString, FontName, "")
+    FONT_INFO_PROPERTY_DIRTY(bklong, FontSize, 24)
 	
-	FONT_INFO_PROPERTY(bklong, XInterval, 0);
-	FONT_INFO_PROPERTY(bklong, YInterval, 12);
+    FONT_INFO_PROPERTY(bklong, XInterval, 0)
+    FONT_INFO_PROPERTY(bklong, YInterval, 12)
 
 #undef FONT_INFO_PROPERTY_DIRTY
 #undef FONT_INFO_PROPERTY
@@ -190,11 +189,11 @@ private:
 #define FONT_INFO_PROPERTY_STYLE_WITHBOOL(_t, _n, _v) public: inline void set##_n(const _t &v){style._v = v;} inline _t get##_n() const {return style._v;} inline void set##_n##Enabled(bool b){style.enable##_v=b;} inline bool is##_n##Enabled(){return style.enable##_v;}
 #define FONT_INFO_PROPERTY_STYLE(_t, _n, _v) public: inline void set##_n(const _t &v){style._v = v;} inline _t get##_n() const {return style._v;}
 	
-	FONT_INFO_PROPERTY_STYLE(bkulong, FontStyle, style);
-	FONT_INFO_PROPERTY_STYLE(BKE_FontColor, FontColor, color);
+    FONT_INFO_PROPERTY_STYLE(bkulong, FontStyle, style)
+    FONT_INFO_PROPERTY_STYLE(BKE_FontColor, FontColor, color)
 
-    FONT_INFO_PROPERTY_STYLE_WITHBOOL(QColor, Shadow, shadow);
-    FONT_INFO_PROPERTY_STYLE_WITHBOOL(QColor, Stroke, stroke);
+    FONT_INFO_PROPERTY_STYLE_WITHBOOL(QColor, Shadow, shadow)
+    FONT_INFO_PROPERTY_STYLE_WITHBOOL(QColor, Stroke, stroke)
 
 #undef FONT_INFO_PROPERTY_STYLE
 #undef FONT_INFO_PROPERTY_STYLE_WITHBOOL
@@ -218,7 +217,7 @@ private:
 #if defined(WIN32) || defined(LINUX) || defined(MACOS) 
 	static const bklong filecachelimit = 60 * 1024 * 1024;
 #else
-	static const bklong filecachelimit = 30 * 1024 * 1024;;
+    static const bklong filecachelimit = 30 * 1024 * 1024;
 #endif
 	static bklong filecachesize;
 

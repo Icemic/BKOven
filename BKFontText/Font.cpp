@@ -1,4 +1,6 @@
 ﻿#include "Font.h"
+#include "../shared/vshack.h"
+#include <QDebug>
 
 bool stdioSeek(QIODevice *stream, bklong offset, int direction){
     switch (direction){
@@ -509,6 +511,7 @@ QImage BKE_FontCache::getGlyphImageEx(const QString &text, const BKE_FontInfo &i
 	BKE_Font *font = info.getFont();
 	if (font == NULL)
 	{
+        qWarning() << "BKE_FontCache: getGlyphImageEx: 字体为空。" << endl;
         return QImage();
 	}
 	bklong maxline = h;
@@ -582,8 +585,8 @@ QImage BKE_FontCache::getGlyphImageEx(const QString &text, const BKE_FontInfo &i
 			//drawAt(bitmap, w, h, glyph->bitmap, glyph->width, glyph->height, curx, cury);
 			curx += glyph->advancex;
 		}
-	}
-    return QImage((unsigned char *)bitmap.data(), w, h, QImage::Format_RGBA8888);
+    }
+    return QImage((unsigned char *)(bitmap.data()), w, h, QImage::Format_RGBA8888);
 }
 
 //height最小为字体高，width最小为2，为了对空串的textsprite取高度也能有正确结果
@@ -710,7 +713,7 @@ bool BKE_FontCache::initTTF()
 
 BKE_Font* BKE_FontCache::openFont(const QString &filename, bklong height)
 {
-    if(QFile::exists(filename))
+    if(!QFile::exists(filename))
         return NULL;
     FontKey key(filename, height);
 	auto it = fontcache.find(key);

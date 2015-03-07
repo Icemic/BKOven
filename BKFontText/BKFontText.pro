@@ -14,16 +14,20 @@ DEFINES += BKFONTTEXT_LIBRARY
 SOURCES += \
     Font.cpp \
     CCObject.cpp \
-    ImageSupport.cpp
+    ImageSupport.cpp \
+    BKFontText.cpp
 
 HEADERS += \
         bkfonttext_global.h \
     Font.h \
     BasicCache.h \
     CCObject.h \
-    ImageSupport.h
+    ImageSupport.h \
+    BKFontText.h
 
 LIBS += $$PWD/freetype.lib
+
+INCLUDEPATH += $$PWD/
 
 unix {
     target.path = /usr/lib
