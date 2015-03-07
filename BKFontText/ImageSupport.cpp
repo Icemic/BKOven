@@ -5,6 +5,7 @@ QByteArray grayToRGBA(const QByteArray &gray, bkulong width, bkulong height, con
 {
     QByteArray rgba;
     rgba.resize(width * height * 4);
+	rgba.fill(0, width * height * 4);
     bkulong *dst = (bkulong *)rgba.data();
     bkuchar *src = (bkuchar *)gray.data();
 	bkulong b, c;
@@ -94,7 +95,7 @@ void drawAt(QByteArray &dst_, bkulong dstWidth, bkulong dstHeight, const QByteAr
 {
 	if ((bklong)dstWidth < x || (bklong)dstHeight < y)
 		return;
-    const char *dst = dst_.data();
+    char *dst = dst_.data();
     const char *src = src_.data();
 	int width, height;
 	if (x >= 0)

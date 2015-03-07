@@ -1,11 +1,10 @@
 TEMPLATE = subdirs
 
-SUBDIRS += \
-    ParserHelper \
-    BKAudio \
-    BKOven \
-    BKFontText \
+SUBDIRS += ParserHelper \
     NewProjectWizard \
+    BKFontText \
     SozaiImportWizard \
     PreviewWidget \
+    BKAudio \
+    BKOven \
     Test \

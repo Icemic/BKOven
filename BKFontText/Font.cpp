@@ -466,6 +466,18 @@ void BKE_FontCache::getStringSize(const QString &text, bklong &width, bklong &he
 		width = 2;
 }
 
+struct QImageDestructorHelper
+{
+    QByteArray data;
+    QImageDestructorHelper(const QByteArray &a):data(a){}
+};
+
+static void myImageCleanupHandler(void *info)
+{
+    QImageDestructorHelper *h = (QImageDestructorHelper *)info;
+    delete h;
+}
+
 QImage BKE_FontCache::getGlyphImage(const QString &text, const BKE_FontInfo &info)
 {
 	BKE_Font *font = info.getFont();
@@ -503,7 +515,8 @@ QImage BKE_FontCache::getGlyphImage(const QString &text, const BKE_FontInfo &inf
 		if (pos < 0)
 			pos = 0;
 	}
-    return QImage((unsigned char *)bitmap.constData(), width, height, QImage::Format_RGBA8888);
+    QImageDestructorHelper *h = new QImageDestructorHelper(bitmap);
+    return QImage((const unsigned char *)(h->data.data()), width, height, QImage::Format_RGBA8888, &myImageCleanupHandler, h);
 }
 
 QImage BKE_FontCache::getGlyphImageEx(const QString &text, const BKE_FontInfo &info/* = current_info*/, const QString &extraChar/* = L""*/, bklong w /*= -1*/, bklong h/* = -1*//*actually h is maxline*/)
@@ -586,7 +599,8 @@ QImage BKE_FontCache::getGlyphImageEx(const QString &text, const BKE_FontInfo &i
 			curx += glyph->advancex;
 		}
     }
-    return QImage((unsigned char *)(bitmap.data()), w, h, QImage::Format_RGBA8888);
+    QImageDestructorHelper *hl = new QImageDestructorHelper(bitmap);
+	return QImage((const unsigned char *)(hl->data.data()), w, h, QImage::Format_RGBA8888, &myImageCleanupHandler, hl);
 }
 
 //height最小为字体高，width最小为2，为了对空串的textsprite取高度也能有正确结果

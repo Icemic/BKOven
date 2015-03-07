@@ -20,7 +20,7 @@ BKFontText *BKFontText::getInstance()
 QImage BKFontText::render(const QString &text)
 {
     BKE_FontInfo fInfo;
-    fInfo.setFontName("D:/workspace/字体/SourceHanSans/SourceHanSansCN-Normal.otf");
+    fInfo.setFontName("D:/SourceHanSansCN-Normal.otf");
     fInfo.setFontColor(BKE_FontColor(QColor("black")));
     fInfo.setFontStyle(bkeStyleNormal);
     fInfo.setFontSize(24);
