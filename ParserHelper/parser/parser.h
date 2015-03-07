@@ -5,6 +5,8 @@
 #include "extend.h"
 #include "defines.h"
 
+extern wchar_t OP_CODE[][15];
+
 class Parser;
 
 typedef void (Parser::*OP_Function)(BKE_bytree**);
@@ -162,6 +164,12 @@ private:
 	//void nud_new();
 	//void nud_literal(BKE_bytree **tree);
 	void nud_with(BKE_bytree **tree);
+	void nud_stop(BKE_bytree **tree)
+	{
+		*tree = NULL;
+		forcequit = true;
+		return;
+	}
 	//void nud_other(BKE_bytree **tree);
 	void nud_end(BKE_bytree **tree)
 	{
@@ -273,7 +281,7 @@ private:
 	{
 		BKE_UNUSED_PARAM(tree);
 		{
-			throw Var_Except(L"语法错误，未知操作符", curpos - exp);
+			throw Var_Except(wstring(L"语法错误，操作符") + OP_CODE[token.opcode % OP_COUNT] + L"不应出现在此处", curpos - exp);
 		};
 	};
 
@@ -304,7 +312,7 @@ public:
 
 	BKE_Variable evalMultiLineStr(const wstring &exp, BKE_VarClosure *_this = BKE_VarClosure::global());
 
-	BKE_bytree *parse(const wstring &exp, bkplong startpos=0);
+	BKE_bytree *parse(const wstring &exp, bkplong startpos = 0, bkplong startline = 0);
 	void unParse(BKE_bytree *tree, wstring &res);
 
 	inline void setErrorMsg(const wstring &msg){errorMSG=msg;}
@@ -325,4 +333,7 @@ public:
 #ifdef PARSER_DEBUG
 	inline double getCostTime(){ auto re = costTime; costTime = 0; return re; }
 #endif
+
+	bool krmode;	//双引号转义
+	bool rawstr;	//字符串可跨行
 };

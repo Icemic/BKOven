@@ -131,6 +131,11 @@ public:
 		return str2num(var->str.c_str());
 	}
 
+	const wchar_t *c_str() const
+	{
+		return var->str.c_str();
+	}
+
 	inline bool canBeNumber() const
 	{
 		wchar_t *end;
@@ -144,6 +149,11 @@ public:
 	inline bool operator == (const BKE_String &s) const
 	{
 		return *var == *s.var;
+	}
+
+	inline bool operator == (const wchar_t *s) const
+	{
+		return var->str.c_str() == s;
 	}
 
 	inline bool operator != (const BKE_String &s) const
@@ -284,7 +294,7 @@ public:
 
 inline GlobalStringMap& StringMap()
 {
-	return _globalStructures.globalStringMap;
+	return *_globalStructures.globalStringMap;
 }
 
 inline int32_t BKE_hash(const BKE_String &str)

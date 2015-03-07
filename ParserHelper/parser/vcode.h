@@ -22,8 +22,8 @@ enum BKE_opcode : bkplong
 	OP_WHILE,
 	OP_DO,
 	OP_FOREACH,
-	OP_CONSTVAR,
-	OP_LITERAL,
+	OP_CONSTVAR,	//常量
+	OP_LITERAL,		//变量
 	OP_FUNCTION,
 	OP_CLASS,
 	OP_PROPGET,

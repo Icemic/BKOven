@@ -257,7 +257,7 @@ void BKE_Variable::save(wstring &result, bool format, bkplong indent) const
 				it++;
 			if (it == vmap.end())
 			{
-				result += L"])";
+				//result += L"])";
 				goto _class_save_native;
 			}
 			if (format)

@@ -40,12 +40,12 @@
 #define REG_GET(name) _class->addNativePropGet(L###name, &CURRENTCLASS::nativeGet_##name);
 #define REG_SET(name) _class->addNativePropSet(L###name, &CURRENTCLASS::nativeSet_##name);
 
-#define CHECKCLASSINSTANCE(__var, __classname) if(__var.getType()!=VAR_CLASS || !((BKE_VarClass*)__var.obj)->isInstanceof(__classname))throw Var_Except(wstring(L"传入的类需要")+__classname+wstring(L"类或其派生类。"))
-#define GETCLASSINSTANCE(__var, __class, __name) CHECKCLASSINSTANCE(__var, _BKETOWSTRING(__class)); if(((BKE_VarClass*)__var.obj)->isdef)throw Var_Except(L"调用该方法的不是对象实例");__class *__name=dynamic_cast<__class*>(((BKE_VarClass*)__var.obj)->native);
-#define CREATECLASSINSTANCE(__instance, __native, __class, ...) auto *__native=new __class(__VA_ARGS__); auto *__instance=new BKE_VarClass((BKE_VarClass *)(BKE_VarClosure::global()->getMember(L###__class).obj), __native);
+#define CHECKCLASSINSTANCE(__obj, __classname) if(!dynamic_cast<BKE_VarClass*>(__obj) || !((BKE_VarClass*)__obj)->isInstanceof(__classname))throw Var_Except(wstring(L"传入的类需要")+__classname+wstring(L"类或其派生类。"))
+#define GETCLASSINSTANCE(__obj, __class, __name) CHECKCLASSINSTANCE(__obj, _BKETOWSTRING(__class)); if(((BKE_VarClass*)__obj)->isdef)throw Var_Except(L"调用该方法的不是对象实例");__class *__name=dynamic_cast<__class*>(((BKE_VarClass*)__obj)->native);
+#define CREATECLASSINSTANCE(__instance, __native, __class, ...) auto *__native=new __class(__VA_ARGS__); auto *__instance=new BKE_VarClass((BKE_VarClass *)(BKE_VarClosure::global()->getMember(L###__class).obj), __native); __native->_class = __instance;
 
-#define CHECKCLASS(__classname) CHECKCLASSINSTANCE((*self), __classname)
-#define GETINSTANCE() GETCLASSINSTANCE((*self), CURRENTCLASS, instance)
+#define CHECKCLASS(__classname) CHECKCLASSINSTANCE((_this), __classname)
+#define GETINSTANCE() GETCLASSINSTANCE((_this), CURRENTCLASS, instance)
 
 #define RETURNDEFAULT return BKE_Variable();
 #define PARAMEXIST(n) (paramarray && paramarray->getMember(n).getType()!=VAR_NONE)
@@ -68,6 +68,8 @@
 			v.obj=new BKE_VarClass(name, _class);		\
 		else											\
 			v.obj = new BKE_VarClass(name);				\
+		if(((BKE_VarClass*)v.obj)->native)				\
+			delete ((BKE_VarClass*)v.obj)->native;		\
 		((BKE_VarClass*)v.obj)->native = this;		\
 	}													\
 	_class = (BKE_VarClass*)v.obj;

@@ -70,6 +70,24 @@ public:
 //		BKE_inlineInit((T*)buf, ARR_UNITSIZE);
 	}
 
+	BKE_array & operator = (const BKE_array &arr)
+	{
+		clear();
+		free(addrlist);
+		addrsize = arr.addrsize;
+		addrcount = arr.addrcount;
+		addrlist = (T **)malloc(sizeof(void*) * addrsize);
+		addrlist[0] = (T*)buf;
+		memcpy(addrlist[0], arr.addrlist[0], ARR_UNITSIZE * sizeof(T));
+		for (int i = 1; i < addrcount + 1; i++)
+		{
+			addrlist[i] = (T*)malloc(ARR_UNITSIZE * sizeof(T));
+			memcpy(addrlist[i], arr.addrlist[i], ARR_UNITSIZE * sizeof(T));
+		}
+		backaddr = arr.backaddr - arr.addrlist[addrcount] + addrlist[addrcount];
+		return *this;
+	}
+
 	inline void clear()
 	{
 		if(!count)
@@ -163,6 +181,9 @@ public:
 		{
 			while(size<count--)
 				((__array_helper*)(&addrlist[count>>ARR_OFFSET][count & ARR_MASK]))->~__array_helper();
+			for (int i = (count >> ARR_OFFSET) + 1; i <= addrcount; i++)
+				free(addrlist[i]);
+			addrcount = count >> ARR_OFFSET;
 			count++;
 			backaddr=&operator [] (size-1);
 		}

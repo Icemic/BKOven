@@ -1,0 +1,12 @@
+#ifndef BKFONTTEXT_GLOBAL_H
+#define BKFONTTEXT_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(BKFONTTEXT_LIBRARY)
+#  define BKFONTTEXTSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define BKFONTTEXTSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // BKFONTTEXT_GLOBAL_H

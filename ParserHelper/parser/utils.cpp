@@ -608,7 +608,7 @@ void bkpmbstowcs(wchar_t *dst, const char *s, int srclen)
 	*dst = 0;
 }
 
-static bkpulong s_seed = time(NULL) * 45568;
+static bkpulong s_seed = (bkpulong)(time(NULL) * 45568);
 
 void bkpRandomSeed(bkpulong seed)
 {
@@ -632,20 +632,19 @@ double bkpRandomDouble(double min, double max)
 #include "BKE_string.h"
 #include "BKE_variable.h"
 
-struct GlobalClosure
-{
-	BKE_VarClosure g;
-};
-
-static GlobalStringMap m;
-static GlobalMemoryPool p;
-static GlobalClosure _gc;
-
 GlobalStructures::GlobalStructures()
-	: globalStringMap(m)
-	, globalMemoryPool(p)
-	, globalClosure(_gc.g)
 {
+    init();
+}
+
+void GlobalStructures::init()
+{
+    static GlobalStringMap m;
+    static GlobalMemoryPool p;
+    static BKE_VarClosure g;
+    this->globalStringMap = &m;
+    this->globalMemoryPool = &p;
+    this->globalClosure = &g;
 }
 
 GlobalStructures _globalStructures;

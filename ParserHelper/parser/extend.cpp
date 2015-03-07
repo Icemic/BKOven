@@ -109,7 +109,26 @@ namespace Parser_Util
 	NATIVE_FUNC(eval)
 	{
 		if (PARAMEXIST(0))
-			return Parser::getInstance()->eval(PARAM(0));
+		{
+			bool krmode = Parser::getInstance()->krmode;
+			bool rawstr = Parser::getInstance()->rawstr;
+			Parser::getInstance()->krmode = PARAM(1);
+			Parser::getInstance()->rawstr = PARAM(2);
+			BKE_Variable res;
+			try
+			{
+				res = Parser::getInstance()->eval(PARAM(0));
+			}
+			catch (Var_Except &e)
+			{
+				Parser::getInstance()->krmode = krmode;
+				Parser::getInstance()->rawstr = rawstr;
+				throw e;
+			}
+			Parser::getInstance()->krmode = krmode;
+			Parser::getInstance()->rawstr = rawstr;
+			return res;
+		}
 		else
 			return BKE_Variable();
 	}
@@ -400,7 +419,7 @@ namespace Parser_Util
 		MINIMUMPARAMNUM(2);
 		auto name = PARAM(0).asBKEStr();
 		auto var = BKE_VarClosure::global()->getMember(name);
-		if (var.getType() != VAR_CLASS || static_cast<BKE_VarClass*>(PARAM(0).obj)->isInstance())
+		if (var.getType() != VAR_CLASS || static_cast<BKE_VarClass*>(var.obj)->isInstance())
 		{
 			throw Var_Except(L"传入的第一个参数必须是一个类的名称。");
 		}

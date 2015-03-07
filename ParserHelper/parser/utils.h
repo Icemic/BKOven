@@ -111,6 +111,20 @@ enum VarType
 #define NULL nullptr
 #endif
 
+#define WSTRNUM(x) L###x
+#define WSTR(x) L##x
+#define WSTR2(x) WSTR(x)
+#define WSTR2NUM(x) WSTRNUM(x)
+#define W_FILE WSTR2(__FILE__)
+#define W_FUNCTION WSTR2(__FUNCTION__)
+#define W_LINE WSTR2NUM(__LINE__)
+
+#if PARSER_DEBUG
+#define VAR_EXCEPT_EXT , W_FILE, W_FUNCTION, W_LINE
+#else
+#define VAR_EXCEPT_EXT
+#endif
+
 class Var_Except
 {
 private:
@@ -121,17 +135,23 @@ public:
 #ifdef PARSER_DEBUG
 	std::wstring lineinfo;
 	std::wstring functionname;
+	std::wstring _file;
+	std::wstring _func;
+	std::wstring _line;
+	Var_Except(const std::wstring &str, const std::wstring &_f, const std::wstring &_f2, const std::wstring &l) :msg(str), pos(-1), line(-1), _file(_f), _func(_f2), _line(l){};
+	Var_Except(const std::wstring &str, bkplong p, const std::wstring & _f, const std::wstring & _f2, const std::wstring &l) :msg(str), pos(p), line(-1), _file(_f), _func(_f2), _line(l){};
 #endif
-	Var_Except(const std::wstring &str){ msg = str; pos = -1; line = -1; };
-	Var_Except(const std::wstring &str, bkplong pos){ msg = str; this->pos = pos; line = -1; };
-    inline std::wstring getMsg() const { return line == -1 ? (pos == -1 ? msg : L"在" + bkpInt2Str((int)pos) + L"处：" + msg) : L"在" + bkpInt2Str((int)line) + L"行" + bkpInt2Str((int)pos) + L"处：" + msg; };
+	Var_Except(const std::wstring &str) :msg(str), pos(-1), line(-1){};
+	Var_Except(const std::wstring &str, bkplong p) :msg(str), pos(p), line(-1){};
+	inline std::wstring getMsg(){ return line == -1 ? (pos == -1 ? msg : L"在" + bkpInt2Str((int)pos) + L"处：" + msg) : L"在" + bkpInt2Str((int)line) + L"行" + bkpInt2Str((int)pos) + L"处：" + msg; };
+	inline std::wstring getMsgWithoutPos(){ return msg; };
 	inline void setMsg(const std::wstring &str){ msg = str; };
 	inline void addPos(bkplong pos){ this->pos = pos; }
 	inline void removePos(){ this->pos = -1; }
 	inline void addLine(bkplong line){ this->line = line; }
 	inline void removeLine(){ this->line = -1; }
-    inline bkplong getPos() const { return pos; }
-    inline bkplong getLine() const { return line; }
+	inline bkplong getPos(){ return pos; }
+	inline bkplong getLine(){ return line; }
 	inline bool hasPos(){ return pos > -1; }
 };
 
@@ -160,12 +180,15 @@ class GlobalMemoryPool;
 class BKE_VarClosure;
 struct GlobalStructures
 {
-	GlobalStringMap &globalStringMap;
-	GlobalMemoryPool &globalMemoryPool;
-	BKE_VarClosure &globalClosure;
+	GlobalStringMap *globalStringMap;
+	GlobalMemoryPool *globalMemoryPool;
+	BKE_VarClosure *globalClosure;
 	GlobalStructures();
+    void init();
 };
 
 extern GlobalStructures _globalStructures;
+
+#define GLOBALSTRUCTURES_INIT() static struct __GlobalLoader { __GlobalLoader(){_globalStructures.init();}} __globalLoader
 
 #endif

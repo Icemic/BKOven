@@ -61,7 +61,7 @@ public:
 
 inline GlobalMemoryPool& MemoryPool()
 {
-	return _globalStructures.globalMemoryPool;
+	return *_globalStructures.globalMemoryPool;
 }
 
 //virtual base class for all Objects
@@ -141,7 +141,7 @@ class BKE_VarObjectAutoReleaser
 public:
 	BKE_VarObject *obj;
 	BKE_VarObjectAutoReleaser(BKE_VarObject * o){ obj = o; }
-	~BKE_VarObjectAutoReleaser(){ if (obj) obj->release(); }
+	~BKE_VarObjectAutoReleaser(){ obj->release(); }
 	template<class T = BKE_VarObject *>
 	operator T() const { static_assert(std::is_convertible<T, BKE_VarObject *>::value, ""); return (T)obj; }
 };
@@ -261,7 +261,7 @@ public:
 		save(str2, false);					\
 		str2 += L"\t:";						\
 		str2+= str;							\
-		throw Var_Except(str2);				\
+		throw Var_Except(str2 VAR_EXCEPT_EXT);				\
 		}
 
 	//variable and const
@@ -720,11 +720,12 @@ public:
 	{
 		if (v)
 		{
+			bkplong c = vararray.size();
 			bkplong count = v->getCount();
-			vararray.resize(vararray.size() + count);
-			for (int i = 0; i<count; i++)
+			vararray.resize(c + count);
+			for (int i = 0; i < count; i++)
 			{
-				vararray[count + i] = v->quickGetMember(i);
+				vararray[c + i] = v->quickGetMember(i);
 			}
 		}
 	};
@@ -934,7 +935,7 @@ class BKE_VarClass;
 
 class BKE_VarClosure :public BKE_VarObject
 {
-	friend struct GlobalClosure;
+	friend struct GlobalStructures;
 protected:
 	inline BKE_Variable& quickGetMember(const BKE_String &key)
 	{
@@ -964,7 +965,7 @@ public:
 			)
 			delete this;
 	};
-	inline BKE_VarClosure(const BKE_VarClosure *p = NULL):BKE_VarObject(VAR_CLO), extraref(0){ parent = const_cast<BKE_VarClosure *>(p); withvar = NULL; };
+	inline BKE_VarClosure(const BKE_VarClosure *p = NULL):BKE_VarObject(VAR_CLO), extraref(0){ parent = const_cast<BKE_VarClosure *>(p); withvar = p ? BKE_VarObjectSafeReferencer(p->withvar) : NULL; };
 	inline void clear()
 	{
 		varmap.clear();
@@ -977,7 +978,7 @@ public:
 			return parent->withvar;
 		return NULL;
 	}
-	bool hasMember(const BKE_String &key) const
+	virtual bool hasMember(const BKE_String &key) const
 	{
 		if (varmap.find(key) != varmap.end())
 			return true;
@@ -985,7 +986,7 @@ public:
 			return parent->hasMember(key);
 		return false;
 	}
-	bool hasMember(const BKE_String &key, BKE_Variable **var) const
+	virtual bool hasMember(const BKE_String &key, BKE_Variable **var) const
 	{
 		auto it = varmap.find(key);
 		if (it != varmap.end())
@@ -1043,7 +1044,7 @@ public:
 	};
 	inline static BKE_VarClosure* global()
 	{
-		return &_globalStructures.globalClosure;
+		return _globalStructures.globalClosure;
 	};
 	inline void addNativeFunction(const BKE_String &key, BKE_NativeFunction func);
 	void addNativePropGet(const BKE_String &key, BKE_NativeFunction func);
@@ -1309,10 +1310,8 @@ class BKE_VarClass;
 
 class BKE_NativeClass
 {
-protected:
-	BKE_VarClass *_class;
-
 public:
+	BKE_VarClass *_class;
 	BKE_NativeClass() = delete;
 	virtual ~BKE_NativeClass(){}
 	inline BKE_NativeClass(const wchar_t *name) : _class(NULL){ BKE_UNUSED_PARAM(name); }
@@ -1358,10 +1357,12 @@ private:
 		}
 	}
 
-	void check(BKE_VarClass *cla)
+	void check(BKE_VarClass *cla) const
 	{
 		if (cla->isInstanceof(classname))
 			throw Var_Except(L"类定义存在循环定义，" + cla->classname.getConstStr() + L"已经是" + classname.getConstStr() + L"的子类。");
+		if (native && cla->native)
+			throw Var_Except(L"目前不支持从多个Native类继承。");
 	}
 
 	virtual ~BKE_VarClass()
@@ -1382,9 +1383,11 @@ public:
 	BKE_NativeClass *native;
 	BKE_String classname;
 	bool isdef;
+	BKE_VarClass *defclass;
 	bool cannotcreate;
 	BKE_array<BKE_VarClass *> parents;
-	BKE_hashmap<BKE_String, BKE_Variable> staticvar;//only use when isdef is true
+	//staticvar合并进varmap
+//	BKE_hashmap<BKE_String, BKE_Variable> staticvar;//only use when isdef is true
 	BKE_hashmap<BKE_String, BKE_Variable> classvar;//单独拿出来防止被类名.变量名引用到
 
 	BKE_VarClass() = delete;
@@ -1394,6 +1397,7 @@ public:
 	{
 		innerCreateInstance = NULL;
 		native = NULL;
+		defclass = NULL;
 		classname = name;
 		vt = VAR_CLASS;
 		isdef = true;
@@ -1407,15 +1411,16 @@ public:
 	{
 		innerCreateInstance = NULL;
 		native = NULL;
+		defclass = NULL;
 		classname = name;
 		vt = VAR_CLASS;
 		isdef = true;
 		check(parent);
 		parent->addRef();
 		for (auto &&it : parent->classvar)
-			varmap[it.first] = it.second.clone();
-		for (auto &&it : parent->staticvar)
-			staticvar[it.first] = it.second.clone();
+			classvar[it.first] = it.second.clone();
+		//for (auto &&it : parent->staticvar)
+		//	staticvar[it.first] = it.second.clone();
 		parents.push_back(parent);
 		//_this->release();
 		//_this = new BKE_VarThis(this);
@@ -1430,7 +1435,13 @@ public:
 			{
 				varmap[it.first].forceSet(new BKE_VarProp(*(BKE_VarProp*)(it.second.obj), this));
 			}
+			else
+			{
+				varmap[it.first].forceSet(it.second.clone());
+			}
 		}
+		if (parent->native)
+			native = parent->native->nativeCreateNew(this, NULL);
 		finalized = false;
 		delayrelease = false;
 	}
@@ -1439,17 +1450,18 @@ public:
 	{
 		innerCreateInstance = NULL;
 		native = NULL;
+		defclass = NULL;
 		classname = name;
 		vt = VAR_CLASS;
 		isdef = true;
 		cannotcreate = false;
-		parents = parent;
 		for (int i = 0; i < parent.size(); i++)
 		{
 			check(parent[i]);
+			parents.push_back(parent[i]);
 			parent[i]->addRef();
-			for (auto &&it : parents[i]->classvar)
-				varmap[it.first] = it.second.clone();
+			for (auto &&it : parent[i]->classvar)
+				classvar[it.first] = it.second.clone();
 			for (auto it : parent[i]->varmap)
 			{
 				if (it.second.getType() == VAR_FUNC)
@@ -1460,9 +1472,15 @@ public:
 				{
 					varmap[it.first].forceSet(new BKE_VarProp(*(BKE_VarProp*)(it.second.obj), this));
 				}
+				else
+				{
+					varmap[it.first].forceSet(it.second.clone());
+				}
 			}
-			for (auto &&it : parents[i]->staticvar)
-				staticvar[it.first] = it.second.clone();
+			//for (auto &&it : parent[i]->staticvar)
+			//	staticvar[it.first] = it.second.clone();
+			if (parents[i]->native)
+				native = parent[i]->native->nativeCreateNew(this, NULL);
 		}
 		finalized = false;
 		delayrelease = false;
@@ -1475,6 +1493,7 @@ public:
 		vt = VAR_CLASS;
 		isdef = false;
 		native = na;
+		defclass = parent;
 		parent->addRef();
 		for (auto &&it : parent->classvar)
 			varmap[it.first] = it.second.clone();
@@ -1491,6 +1510,7 @@ public:
 			{
 				varmap[it.first].forceSet(new BKE_VarProp(*(BKE_VarProp*)(it.second.obj), this));
 			}
+			//not copy static varS
 		}
 		finalized = false;
 		delayrelease = false;
@@ -1517,7 +1537,9 @@ public:
 
 	inline void addNativeFunction(const BKE_String &key, BKE_NativeFunction func)
 	{
-		varmap[key] = new BKE_VarFunction(func);
+		auto f = new BKE_VarFunction(func);
+		f->setClosure(this);
+		varmap[key] = f;
 	};
 
 	void addNativePropGet(const BKE_String &key, BKE_NativeFunction func)
@@ -1544,11 +1566,13 @@ public:
 	{
 		if (varmap.find(key) != varmap.end())
 			return true;
-		if (isdef && staticvar.find(key) != staticvar.end())
-			return true;
-		auto p = dynamic_cast<BKE_VarClass*>(parent);
-		if (p && p->staticvar.find(key) != p->staticvar.end())
-			return true;
+		if (!isdef)
+			return static_cast<BKE_VarClass*>(parent)->hasClassMember(key);
+		for (int i = parents.size() - 1; i >= 0; i--)
+		{
+			if (parents[i]->hasClassMember(key))
+				return true;
+		}
 		return false;
 	}
 
@@ -1560,16 +1584,13 @@ public:
 			(*var) = &it->second;
 			return true;
 		}
-		if (isdef && (it = staticvar.find(key)) != staticvar.end())
-		{
-			(*var) = &it->second;
-			return true;
-		}
+		if (!isdef)
+			return static_cast<BKE_VarClass*>(parent)->hasClassMember(key, var);
 		auto p = dynamic_cast<BKE_VarClass*>(parent);
-		if (p && (it = p->staticvar.find(key)) != p->staticvar.end())
+		for (int i = parents.size() - 1; i >= 0; i--)
 		{
-			(*var) = &it->second;
-			return true;
+			if (parents[i]->hasClassMember(key, var))
+				return true;
 		}
 		return false;
 	}
@@ -1586,8 +1607,29 @@ public:
 			return varmap[key];
 	}
 
+	virtual bool hasMember(const BKE_String &key) const override
+	{
+		if (!hasClassMember(key))
+		{
+			//then we find it on current context
+			return static_cast<BKE_VarClosure*>(parent)->hasMember(key);
+		}
+		return true;
+	}
+	virtual bool hasMember(const BKE_String &key, BKE_Variable **var) const override
+	{
+		if (!hasClassMember(key, var))
+		{
+			//then we find it on current context
+			return static_cast<BKE_VarClosure*>(parent)->hasMember(key, var);
+		}
+		return true;
+	}
+
 	inline BKE_Variable getSuperMember(const BKE_String &key)
 	{
+		if (!isdef)
+			return defclass->getSuperMember(key);
 		if (parents.size() == 0)
 			throw Var_Except(L"类" + classname.getConstStr() + L"不存在父类，super无意义。");
 		if (parents.size() > 1)
@@ -1612,8 +1654,21 @@ public:
 	void deleteThisMember(const BKE_String &key)
 	{
 		varmap.erase(key);
-		if (isdef)
-			staticvar.erase(key);
+	}
+
+	void getAllConstructors(BKE_array<BKE_VarFunction*> *cons, BKE_VarClass *dst)
+	{
+		for (int i = 0; i < parents.size(); i++)
+			parents[i]->getAllConstructors(cons, dst);
+		auto it = dst->varmap.find(classname);
+		if (it != dst->varmap.end())
+		{
+			BKE_Variable &var = it->second;
+			if (var.getType() == VAR_FUNC)
+			{
+				cons->push_back(static_cast<BKE_VarFunction*>(var.obj));
+			}
+		}
 	}
 
 	void construct(BKE_VarArray *paramarray, BKE_VarClass *_this)
@@ -1632,17 +1687,21 @@ public:
 				throw Var_Except(L"不允许创建该类（" + classname.getConstStr() + L"）的实例");
 			}
 		}
-		else
+		//else
 		{
-			auto it = _this->varmap.find(classname);
-			if (it != _this->varmap.end())
-			{
-				BKE_Variable &var = it->second;
-				if (var.getType() == VAR_FUNC)
-				{
-					static_cast<BKE_VarFunction*>(var.obj)->run(paramarray);
-				}
-			}
+			BKE_array<BKE_VarFunction*> cons;
+			getAllConstructors(&cons, _this);
+			for (int i = 0; i < cons.size(); i++)
+				cons[i]->run(paramarray);
+			//auto it = _this->varmap.find(classname);
+			//if (it != _this->varmap.end())
+			//{
+			//	BKE_Variable &var = it->second;
+			//	if (var.getType() == VAR_FUNC)
+			//	{
+			//		static_cast<BKE_VarFunction*>(var.obj)->run(paramarray);
+			//	}
+			//}
 		}
 	}
 
@@ -1670,7 +1729,7 @@ public:
 		if (classname == name)
 			return true;
 		if (!isdef)
-			return static_cast<BKE_VarClass*>(parent)->isInstanceof(name);
+			return static_cast<BKE_VarClass*>(defclass)->isInstanceof(name);
 		for (int i = 0; i < parents.size();i++)
 		{
 			if (parents[i]->isInstanceof(name))
