@@ -2,6 +2,8 @@
 #include "ScriptTreeWidget.h"
 #include "ScriptListWidget.h"
 #include "ui_ScriptWidgetPrivate.h"
+#include "../ScriptGeneration/ScriptStatus.h"
+#include "../StageWidget/StageWidget.h"
 
 ScriptWidgetPrivate::ScriptWidgetPrivate(QWidget *parent) :
     QWidget(parent),
@@ -11,11 +13,14 @@ ScriptWidgetPrivate::ScriptWidgetPrivate(QWidget *parent) :
     ui->scriptTreeWidget->setDisabled(true);
     ui->scriptListWidget->setDisabled(true);
 
+    ScriptStatus::init();
+
     //加载剧本
     connect(ui->scriptTreeWidget,&ScriptTreeWidget::requestShowScripts,[=](const QString &uuid){
         //缓存当前
         if(!ui->scriptListWidget->uuid().isEmpty())
             sceneScripts[ui->scriptListWidget->uuid()] = ui->scriptListWidget->scriptData();
+        ScriptStatus::self()->save();
 
         //检查要读取的内容是否在缓存中已有
         if(sceneScripts.contains(uuid))
@@ -34,9 +39,11 @@ ScriptWidgetPrivate::ScriptWidgetPrivate(QWidget *parent) :
         }
         ui->scriptListWidget->setUuid(uuid);
         ui->scriptListWidget->setEnabled(true);
+        ScriptStatus::self()->open(projectPath,uuid);
         ui->tabWidget->setCurrentIndex(1);
     });
 
+    setupConnections();
 }
 
 ScriptWidgetPrivate::~ScriptWidgetPrivate()
@@ -81,6 +88,7 @@ void ScriptWidgetPrivate::save()
     //将最后的缓存写入
     if(!ui->scriptListWidget->uuid().isEmpty())
         sceneScripts[ui->scriptListWidget->uuid()] = ui->scriptListWidget->scriptData();
+    ScriptStatus::self()->save();
     //开始保存
     QBkeDictionary::const_iterator ite;
     for(ite=sceneScripts.cbegin();ite!=sceneScripts.cend();ite++)
@@ -101,4 +109,29 @@ bool ScriptWidgetPrivate::addScript(const QString &type, const QBkeVariable &dat
         ui->tabWidget->setCurrentIndex(1);
         return true;
     }
+}
+
+void ScriptWidgetPrivate::setupConnections()
+{
+    connect(ui->scriptListWidget,&ScriptListWidget::scriptClicked,[=](const QString &type, QBkeVariableRef, int row){
+        //分析
+        ScriptStatus::self()->analysisOne(ui->scriptListWidget,row);
+        //更新预览
+        //更新舞台区
+        StageWidget::setStageStatus(ScriptStatus::self()->currentStatus(row));
+    });
+
+    connect(ui->scriptListWidget,&ScriptListWidget::scriptAdded,[=](int row){
+        ScriptStatus::self()->dropFrom(row);
+        ScriptStatus::self()->analysisOne(ui->scriptListWidget,row);
+        //更新预览
+        //更新舞台区
+        StageWidget::setStageStatus(ScriptStatus::self()->currentStatus(row));
+    });
+
+    connect(ui->scriptListWidget,&ScriptListWidget::scriptDeleted,[=](int start,int){
+        ScriptStatus::self()->dropFrom(start);
+//        ScriptStatus::analysisOne(ui->scriptListWidget,row);
+    });
+
 }

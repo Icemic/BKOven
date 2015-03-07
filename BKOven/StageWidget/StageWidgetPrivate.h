@@ -1,7 +1,8 @@
-#ifndef STAGEWIDGETPRIVATE_H
+﻿#ifndef STAGEWIDGETPRIVATE_H
 #define STAGEWIDGETPRIVATE_H
 
 #include <QWidget>
+#include "ParserHelper.h"
 
 namespace Ui {
 class StageWidgetPrivate;
@@ -14,6 +15,8 @@ class StageWidgetPrivate : public QWidget
 public:
     explicit StageWidgetPrivate(QWidget *parent = 0);
     ~StageWidgetPrivate();
+
+    void setStageStatus(const QBkeVariable &data);
 
 private:
     Ui::StageWidgetPrivate *ui;

@@ -1,4 +1,4 @@
-#ifndef PARSERHELPER_H
+﻿#ifndef PARSERHELPER_H
 #define PARSERHELPER_H
 
 #include "parserhelper_global.h"
@@ -126,11 +126,12 @@ public:
     QStringList getKeys() const;
     QBkeVariableRef ref(){return _var;}
 
-    QByteArray saveToBinary()const {return saveToString().toUtf8();}
-    QString saveToString()const ;
+    QByteArray saveToBinary(bool format=false)const {return saveToString(format).toUtf8();}
+    QString saveToString(bool format=false)const ;
     void loadFromBinary(const QByteArray &b);
     void loadFromString(const QString &s);
     void loadClosureDicFromString(const QString &s);
+    QBkeVariable clone();
 
     void setVoid();
 
