@@ -6,6 +6,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
 #include "PreviewScene.h"
+#include "../BKFontText/BKFontText.h"
 
 class PREVIEWWIDGETSHARED_EXPORT PreviewWidget: public QGraphicsView
 {
@@ -31,10 +32,78 @@ public:
     void setTextWindowImage(const QString &filename, int x, int y);
     void setTextWindowTextPos(int rx, int ry);
     void setNameBoxTextPos(int rx, int ry);
-    void setTextWindowTextStyle(int size, int maxWidth, int maxHeight, const QString &color, const QString &align,
-                                bool bold, bool underlined, bool italic, bool stroke, const QString &strokeColor, bool shadow, const QString &shadowColor);
-    void setNameBoxTextStyle(int size, int maxWidth, QString &color, const QString &align,
-                             bool bold, bool underlined, bool italic, bool stroke, const QString &strokeColor, bool shadow, const QString &shadowColor);
+
+    void renderTextWindowText(const QString &text, int w=-1, int h=-1);
+    void renderNameBoxText(const QString &text, int w=-1, int h=-1);
+
+    void setTextWindowTextFontInfo(const QString &name, const QColor &color=QColor("white"), const bklong &style=bkeStyleNormal, int size=24)
+    {
+        BKFontText::getInstance()->setFontInfo("PreviewWidget_textwindowtext",projectPath+"/Data/"+name,color,style,size);
+    }
+
+    void setTextWindowTextBold(bool state)
+    {
+        BKFontText::getInstance()->setBold("PreviewWidget_textwindowtext",state);
+    }
+
+    void setTextWindowTextItalic(bool state){
+        BKFontText::getInstance()->setItalic("PreviewWidget_textwindowtext",state);
+    }
+
+    void setTextWindowTextUnderlined(bool state)
+    {
+        BKFontText::getInstance()->setUnderlined("PreviewWidget_textwindowtext",state);
+    }
+
+    void setTextWindowTextStrike(bool state)
+    {
+        BKFontText::getInstance()->setStrike("PreviewWidget_textwindowtext",state);
+    }
+
+    void setTextWindowTextShadow(bool state, const QColor &color=QColor())
+    {
+        BKFontText::getInstance()->setShadow("PreviewWidget_textwindowtext",state,color);
+    }
+
+    void setTextWindowTextStroke(bool state, const QColor &color=QColor())
+    {
+        BKFontText::getInstance()->setStroke("PreviewWidget_textwindowtext",state,color);
+    }
+
+    void setNameBoxTextFontInfo(const QString &name, const QColor &color=QColor("white"), const bklong &style=bkeStyleNormal, int size=24)
+    {
+        BKFontText::getInstance()->setFontInfo("PreviewWidget_nameBoxtext",projectPath+"/Data/"+name,color,style,size);
+    }
+
+    void setNameBoxTextBold(bool state)
+    {
+        BKFontText::getInstance()->setBold("PreviewWidget_nameBoxtext",state);
+    }
+
+    void setNameBoxTextItalic(bool state)
+    {
+        BKFontText::getInstance()->setItalic("PreviewWidget_nameBoxtext",state);
+    }
+
+    void setNameBoxTextUnderlined(bool state)
+    {
+        BKFontText::getInstance()->setUnderlined("PreviewWidget_nameBoxtext",state);
+    }
+
+    void setNameBoxTextStrike(bool state)
+    {
+        BKFontText::getInstance()->setStrike("PreviewWidget_nameBoxtext",state);
+    }
+
+    void setNameBoxTextShadow(bool state, const QColor &color=QColor())
+    {
+        BKFontText::getInstance()->setShadow("PreviewWidget_nameBoxtext",state,color);
+    }
+
+    void setNameBoxTextStroke(bool state, const QColor &color=QColor())
+    {
+        BKFontText::getInstance()->setStroke("PreviewWidget_nameBoxtext",state,color);
+    }
 
 
 private:
@@ -48,8 +117,8 @@ private:
     QMap<QString,QGraphicsPixmapItem*> itemItems;
 
     QGraphicsPixmapItem* textWindowItem;
-    QGraphicsTextItem* nameBoxTextItem;
-    QGraphicsTextItem* textWindowTextItem;
+    QGraphicsPixmapItem* nameBoxTextItem;
+    QGraphicsPixmapItem* textWindowTextItem;
 
     QMap<QString,QGraphicsPixmapItem*> textWindowButtonItems;
 

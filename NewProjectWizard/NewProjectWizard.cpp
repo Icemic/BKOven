@@ -44,6 +44,7 @@ bool NewProjectWizard::open()
         dir.mkdir("bgm");
         dir.mkdir("se");
         dir.mkdir("voice");
+        dir.mkdir("font");
         dir.cd("../");
         dir.mkdir("config");
 

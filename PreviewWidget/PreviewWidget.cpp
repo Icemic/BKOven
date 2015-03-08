@@ -1,4 +1,5 @@
 ﻿#include "PreviewWidget.h"
+#include "../BKFontText/BKFontText.h"
 #include <QOpenGLWidget>
 #include <QDebug>
 
@@ -21,13 +22,13 @@ PreviewWidget::PreviewWidget(int w, int h, const QString &projectPath,QWidget* p
 
     textWindowItem = new QGraphicsPixmapItem();
     textWindowItem->setZValue(2000);
-    textWindowTextItem = new QGraphicsTextItem();
+    textWindowTextItem = new QGraphicsPixmapItem();
     textWindowTextItem->setFlag(QGraphicsItem::ItemIsMovable,true);
     textWindowTextItem->setFlag(QGraphicsItem::ItemIsSelectable,true);
     textWindowTextItem->setData(0,"textwindowtext");
     textWindowTextItem->setZValue(2);
     textWindowTextItem->setParentItem(textWindowItem);
-    nameBoxTextItem = new QGraphicsTextItem();
+    nameBoxTextItem = new QGraphicsPixmapItem();
     nameBoxTextItem->setFlag(QGraphicsItem::ItemIsMovable,true);
     nameBoxTextItem->setFlag(QGraphicsItem::ItemIsSelectable,true);
     nameBoxTextItem->setData(0,"textwindowtext");
@@ -42,7 +43,8 @@ PreviewWidget::PreviewWidget(int w, int h, const QString &projectPath,QWidget* p
 
 PreviewWidget::~PreviewWidget()
 {
-
+    BKFontText::getInstance()->removeFontInfo("PreviewWidget_textwindowtext");
+    BKFontText::getInstance()->removeFontInfo("PreviewWidget_nameBoxtext");
 }
 
 void PreviewWidget::setBackgroundImage(const QString &filename)
@@ -149,10 +151,24 @@ void PreviewWidget::setNameBoxTextPos(int rx, int ry)
     nameBoxTextItem->setPos(rx,ry);
 }
 
-void PreviewWidget::setTextWindowTextStyle(int size, int maxWidth, int maxHeight, const QString &color, const QString &align,
-                                           bool bold, bool underlined, bool italic,
-                                           bool stroke, const QString &strokeColor, bool shadow, const QString &shadowColor)
+void PreviewWidget::renderTextWindowText(const QString &text, int w, int h)
 {
-    textWindowTextItem;
-    textWindowTextItem->setTextWidth(0);
+    static QColor transparentColor(0,0,0,0);
+    QPixmap &origin = BKFontText::getInstance()->render(text,"PreviewWidget_textwindowtext",w,h);
+    QPixmap output(w>0?w:origin.width(),h>0?h:origin.height());
+    output.fill(transparentColor);
+    QPainter painter(&output);
+    painter.drawPixmap(0,0,origin);
+    textWindowTextItem->setPixmap(output);
+}
+
+void PreviewWidget::renderNameBoxText(const QString &text, int w, int h)
+{
+    static QColor transparentColor(0,0,0,0);
+    QPixmap &origin = BKFontText::getInstance()->render(text,"PreviewWidget_nameBoxtext",w,h);
+    QPixmap output(w>0?w:origin.width(),h>0?h:origin.height());
+    output.fill(transparentColor);
+    QPainter painter(&output);
+    painter.drawPixmap(0,0,origin);
+    nameBoxTextItem->setPixmap(output);
 }

@@ -29,7 +29,7 @@ class BKE_Sprite;
 enum bkeStyle
 {
 	bkeStyleNormal = 0x00,
-	bkeStyleBlod = 0x01,
+    bkeStyleBold = 0x01,
 	bkeStyleItalic = 0x02,
 	bkeStyleUnderline = 0x04,
 	bkeStyleStrikethrough = 0x08
@@ -126,7 +126,7 @@ public:
 	bklong underline_height;
     QString name;
 
-	inline bool is_bold(){return !!(this->style.style & bkeStyleBlod);}
+    inline bool is_bold(){return !!(this->style.style & bkeStyleBold);}
 	inline bool is_italic(){ return !!(this->style.style & bkeStyleItalic); }
 	inline bool is_underline(){ return !!(this->style.style & bkeStyleUnderline); }
 	inline bool is_strike(){ return !!(this->style.style & bkeStyleStrikethrough); }

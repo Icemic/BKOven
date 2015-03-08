@@ -119,3 +119,10 @@ else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../Soza
 else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../SozaiImportWizard/release/SozaiImportWizard.lib
 else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../SozaiImportWizard/debug/SozaiImportWizard.lib
 else:unix: PRE_TARGETDEPS += $$OUT_PWD/../SozaiImportWizard/libSozaiImportWizard.a
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../BKFontText/release/ -lBKFontText
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../BKFontText/debug/ -lBKFontText
+else:unix: LIBS += -L$$OUT_PWD/../BKFontText/ -lBKFontText
+
+INCLUDEPATH += $$PWD/../BKFontText
+DEPENDPATH += $$PWD/../BKFontText

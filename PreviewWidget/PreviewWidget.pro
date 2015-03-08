@@ -22,3 +22,10 @@ unix {
     target.path = /usr/lib
     INSTALLS += target
 }
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../BKFontText/release/ -lBKFontText
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../BKFontText/debug/ -lBKFontText
+else:unix: LIBS += -L$$OUT_PWD/../BKFontText/ -lBKFontText
+
+INCLUDEPATH += $$PWD/../BKFontText
+DEPENDPATH += $$PWD/../BKFontText

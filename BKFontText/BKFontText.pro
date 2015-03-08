@@ -23,7 +23,8 @@ HEADERS += \
     BasicCache.h \
     CCObject.h \
     ImageSupport.h \
-    BKFontText.h
+    BKFontText.h \
+    Common.h
 
 LIBS += $$PWD/freetype.lib
 

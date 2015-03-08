@@ -516,7 +516,7 @@ QImage BKE_FontCache::getGlyphImage(const QString &text, const BKE_FontInfo &inf
 			pos = 0;
 	}
     QImageDestructorHelper *h = new QImageDestructorHelper(bitmap);
-    return QImage((const unsigned char *)(h->data.data()), width, height, QImage::Format_RGBA8888, &myImageCleanupHandler, h);
+    return QImage((const unsigned char *)(h->data.data()), width, height, QImage::Format_ARGB32, &myImageCleanupHandler, h);
 }
 
 QImage BKE_FontCache::getGlyphImageEx(const QString &text, const BKE_FontInfo &info/* = current_info*/, const QString &extraChar/* = L""*/, bklong w /*= -1*/, bklong h/* = -1*//*actually h is maxline*/)
@@ -600,7 +600,7 @@ QImage BKE_FontCache::getGlyphImageEx(const QString &text, const BKE_FontInfo &i
 		}
     }
     QImageDestructorHelper *hl = new QImageDestructorHelper(bitmap);
-	return QImage((const unsigned char *)(hl->data.data()), w, h, QImage::Format_RGBA8888, &myImageCleanupHandler, hl);
+    return QImage((const unsigned char *)(hl->data.data()), w, h, QImage::Format_ARGB32, &myImageCleanupHandler, hl);
 }
 
 //height最小为字体高，width最小为2，为了对空串的textsprite取高度也能有正确结果
