@@ -3,6 +3,7 @@
 #include "SozaiWidget/SozaiWidget.h"
 #include "StageWidget/StageWidget.h"
 #include "ScriptWidget/ScriptWidget.h"
+#include "PreviewArea/PreviewArea.h"
 #include "ScriptGeneration/ScriptGenerator.h"
 #include <QWidget>
 #include <QHBoxLayout>
@@ -108,12 +109,14 @@ MainWindow::MainWindow(QWidget *parent) :
     SozaiWidget::init();
     StageWidget::init();
     ScriptWidget::init();
+    PreviewArea::init("D:/workspace/Git/BKOven测试/test",1280,720);
 
-    QWidget* widget = new QWidget();
+
+//    QWidget* widget = new QWidget();
     QGridLayout *mainlayer = new QGridLayout;
     QSplitter *hsplitter = new QSplitter(Qt::Horizontal);
     QSplitter *vsplitter = new QSplitter(Qt::Vertical);
-    vsplitter->addWidget(widget);
+    vsplitter->addWidget(PreviewArea::widget());
     vsplitter->addWidget(StageWidget::widget());
     hsplitter->addWidget(SozaiWidget::widget());
     hsplitter->addWidget(vsplitter);
@@ -123,10 +126,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->centralWidget->setLayout(mainlayer);
 
     ScriptGenerator::init();
-
 #ifdef QT_DEBUG
     this->openProject("D:/workspace/Git/BKOven测试/test");
 #endif
+
 }
 
 MainWindow::~MainWindow()

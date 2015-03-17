@@ -5,6 +5,7 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
+#include <QResizeEvent>
 #include "PreviewScene.h"
 #include "../BKFontText/BKFontText.h"
 
@@ -21,7 +22,10 @@ public:
     void setItemImage(const QString &filename, int x, int y);
 
     void clear(){
-        scene->clear();
+        foreach(QGraphicsItem* item, scene->items())
+        {
+            scene->removeItem(item);
+        }
     }
 
     void removeBackgroundImage();
@@ -105,6 +109,8 @@ public:
         BKFontText::getInstance()->setStroke("PreviewWidget_nameBoxtext",state,color);
     }
 
+protected:
+    virtual void resizeEvent(QResizeEvent *e) override;
 
 private:
     int w;

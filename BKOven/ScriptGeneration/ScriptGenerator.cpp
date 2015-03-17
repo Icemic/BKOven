@@ -26,5 +26,6 @@ void ScriptGenerator::handleQuickAdd(const QString &type, const QString &name, c
     QBkeVariable value = data;
     value.insert("type",type);
     value.insert("name",name);
+    value.insert("filePath",filePath);
     ScriptWidget::addScript(type,value);
 }

@@ -47,6 +47,13 @@ PreviewWidget::~PreviewWidget()
     BKFontText::getInstance()->removeFontInfo("PreviewWidget_nameBoxtext");
 }
 
+void PreviewWidget::resizeEvent(QResizeEvent *e)
+{
+    QGraphicsView::resizeEvent(e);
+    fitInView(0,0,scene->width(),scene->height(),Qt::KeepAspectRatio);
+    e->accept();
+}
+
 void PreviewWidget::setBackgroundImage(const QString &filename)
 {
     backgroundItem->setPixmap(QPixmap(projectPath+"/Data/"+filename));

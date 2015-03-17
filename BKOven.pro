@@ -8,3 +8,4 @@ SUBDIRS += ParserHelper \
     BKAudio \
     BKOven \
     Test \
+    GameConfig

@@ -5,6 +5,7 @@
 #include "SozaiImportWizard.h"
 #include "PreviewWidget.h"
 #include "../BKFontText/BKFontText.h"
+#include "../GameConfig/GameConfig.h"
 #include "../shared/vshack.h"
 #include <QDebug>
 #include <QLabel>
@@ -27,29 +28,30 @@ int main(int argc, char *argv[])
 //    ScenarioImportWizard::test();
 
 
-    PreviewWidget *wi = new PreviewWidget(1280, 720, "D:/workspace/Git/BKOven测试/test");
-    wi->show();
-    wi->setBackgroundImage("background/bg01_2.bmp");
+//    PreviewWidget *wi = new PreviewWidget(1280, 720, "D:/workspace/Git/BKOven测试/test");
+//    wi->show();
+//    wi->setBackgroundImage("background/bg01_2.bmp");
 
-    wi->setCharacterImage("character/ycsn74.png",4);
+//    wi->setCharacterImage("character/ycsn74.png",4);
 
-    wi->setTextWindowImage("ui/textwindow_d/textwindow.png",126,460);
+//    wi->setTextWindowImage("ui/textwindow_d/textwindow.png",126,460);
 
-    wi->setTextWindowTextFontInfo("font/SourceHanSansCN-Regular.otf",QColor("#333"),bkeStyleNormal,24);
-    wi->setTextWindowTextPos(20,65);
-    wi->renderTextWindowText("今晚，可以哊～",985,140);
+//    wi->setTextWindowTextFontInfo("font/SourceHanSansCN-Regular.otf",QColor("#333"),bkeStyleNormal,24);
+//    wi->setTextWindowTextPos(20,65);
+//    wi->renderTextWindowText("今晚，可以哊～",985,140);
 
-    wi->setNameBoxTextFontInfo("font/SourceHanSansCN-Regular.otf",QColor("white"),bkeStyleNormal,24);
-    wi->setNameBoxTextPos(20,10);
-    wi->renderNameBoxText("Taigacon",160);
-
-
-    wi->connect(wi,&PreviewWidget::itemMoved,[=](const QString &type, const QString &filename, int x, int y){
-        qDebug() << type << filename << x << y ;
-    });
+//    wi->setNameBoxTextFontInfo("font/SourceHanSansCN-Regular.otf",QColor("white"),bkeStyleNormal,24);
+//    wi->setNameBoxTextPos(20,10);
+//    wi->renderNameBoxText("Taigacon",160);
 
 
+//    wi->connect(wi,&PreviewWidget::itemMoved,[=](const QString &type, const QString &filename, int x, int y){
+//        qDebug() << type << filename << x << y ;
+//    });
+
+    GameConfig g;
+    g.execWithPath("D:/workspace/Git/BKOven测试/test");
 
 
-    return a.exec();
+    return 0;//a.exec();
 }

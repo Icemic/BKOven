@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     SozaiWidget/BackgroundAddDialog.cpp \
     SozaiWidget/ItemAddDialog.cpp \
     SozaiWidget/SoundAddDialog.cpp \
-    ScriptGeneration/ScriptStatus.cpp
+    ScriptGeneration/ScriptStatus.cpp \
+    PreviewArea/PreviewArea.cpp
 
 HEADERS  += mainwindow.h \
     SozaiWidget/ImageSelectDialog.h \
@@ -53,7 +54,8 @@ HEADERS  += mainwindow.h \
     SozaiWidget/BackgroundAddDialog.h \
     SozaiWidget/ItemAddDialog.h \
     SozaiWidget/SoundAddDialog.h \
-    ScriptGeneration/ScriptStatus.h
+    ScriptGeneration/ScriptStatus.h \
+    PreviewArea/PreviewArea.h
 
 FORMS    += mainwindow.ui \
     SozaiWidget/SozaiWidgetPrivate.ui \
@@ -126,3 +128,10 @@ else:unix: LIBS += -L$$OUT_PWD/../BKFontText/ -lBKFontText
 
 INCLUDEPATH += $$PWD/../BKFontText
 DEPENDPATH += $$PWD/../BKFontText
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../PreviewWidget/release/ -lPreviewWidget
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../PreviewWidget/debug/ -lPreviewWidget
+else:unix: LIBS += -L$$OUT_PWD/../PreviewWidget/ -lPreviewWidget
+
+INCLUDEPATH += $$PWD/../PreviewWidget
+DEPENDPATH += $$PWD/../PreviewWidget

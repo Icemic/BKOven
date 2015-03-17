@@ -28,6 +28,7 @@ void ScriptStatus::open(const QString &projectPath, const QString &uuid)
     QFile f(projectPath+"/config/ScriptStatus/"+uuid+".bkpsr");
     f.open(QIODevice::ReadOnly);
     doc.loadFromBinary(f.readAll());
+    if(doc.isNull()) doc = doc.dic();
     f.close();
 }
 
@@ -112,14 +113,21 @@ void ScriptStatus::analysis(ScriptListWidget *widget)
 void ScriptStatus::analysisOne(ScriptListWidget *widget, int row)
 {
     if(doc.getCount()<=row/2)
+    {
         analysis(widget);
-
-    if(doc[row-1].isVoid())
-        analysisOne(widget,row-1);
-    QBkeVariable data = widget->script(row)->scriptData();
-    QBkeVariable item = doc[row-1].value().clone();
-    _analysis(item,data);
-    doc[row] = item;
+        return;
+    }
+    else if(doc.getCount()<=row)
+    {
+        if(doc[row-1].isVoid())
+            analysisOne(widget,row-1);
+        QBkeVariable data = widget->script(row)->scriptData();
+        QBkeVariable item = doc[row-1].value().clone();
+        _analysis(item,data);
+        doc[row] = item;
+    }
+    else
+        return;
 }
 
 void ScriptStatus::dropFrom(int row)

@@ -4,6 +4,7 @@
 #include "ui_ScriptWidgetPrivate.h"
 #include "../ScriptGeneration/ScriptStatus.h"
 #include "../StageWidget/StageWidget.h"
+#include "../PreviewArea/PreviewArea.h"
 
 ScriptWidgetPrivate::ScriptWidgetPrivate(QWidget *parent) :
     QWidget(parent),
@@ -117,6 +118,7 @@ void ScriptWidgetPrivate::setupConnections()
         //分析
         ScriptStatus::self()->analysisOne(ui->scriptListWidget,row);
         //更新预览
+        PreviewArea::update(ScriptStatus::self()->currentStatus(row));
         //更新舞台区
         StageWidget::setStageStatus(ScriptStatus::self()->currentStatus(row));
     });
