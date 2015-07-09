@@ -8,6 +8,13 @@ GameConfig::GameConfig(QWidget *parent) :
     ui(new Ui::GameConfig)
 {
     ui->setupUi(this);
+
+    connect(this,&QDialog::accepted,[=](){
+        qDebug() << "sdsdf";
+        QDir dir(projectPath);
+        dir.mkpath("config/ui");
+        saveDataOfBaseTab();
+    });
 }
 
 GameConfig::~GameConfig()
@@ -24,11 +31,57 @@ void GameConfig::execWithPath(const QString &projectPath)
     actAndSceneDoc.loadFromBinary(actAndSceneFile.readAll());
     actAndSceneFile.close();
 
+    initBaseTab();
     initTitleTab();
+
+    loadDataOfBaseTab();
+    loadDataOfTitleTab();
 
     exec();
 }
 
+//基本设置选项卡
+void GameConfig::initBaseTab()
+{
+    fillComboBoxWithScene(ui->base_comboBox_entrance);
+}
+
+void GameConfig::saveDataOfBaseTab()
+{
+    QBkeVariable doc;
+    doc.insert("game",ui->base_lineEdit_game->text());
+    doc.insert("author",ui->base_lineEdit_author->text());
+    doc.insert("staff",ui->base_plainTextEdit_staff->toPlainText());
+    doc.insert("copyright",ui->base_plainTextEdit_copyright->toPlainText());
+    doc.insert("entrance",ui->base_comboBox_entrance->currentText());    //禁止/字符
+    doc.insert("mode",ui->base_radioButton_window->isChecked()?"window":"fullscreen");
+
+    QFile file(projectPath+"/config/ui/base.bkpsr");
+    file.open(QIODevice::WriteOnly | QIODevice::Truncate);
+    file.write(doc.saveToBinary(true));
+    file.close();
+
+}
+
+void GameConfig::loadDataOfBaseTab()
+{
+    QBkeVariable doc;
+    QFile file(projectPath+"/config/ui/base.bkpsr");
+    file.open(QIODevice::ReadOnly);
+    doc.loadFromBinary(file.readAll());
+    file.close();
+
+    ui->base_lineEdit_game->setText(doc.value("game").toString());
+    ui->base_lineEdit_author->setText(doc.value("author").toString());
+    ui->base_plainTextEdit_staff->setPlainText(doc.value("staff").toString());
+    ui->base_plainTextEdit_copyright->setPlainText(doc.value("copyright").toString());
+    ui->base_comboBox_entrance->setCurrentText(doc.value("entrance").toString());
+    ui->base_radioButton_fullScreen->setChecked(doc.value("mode").toString()=="fullscreen");
+    ui->base_radioButton_window->setChecked(doc.value("mode").toString()=="window");
+
+}
+
+//标题画面选项卡
 void GameConfig::initTitleTab()
 {
     fillComboBoxWithScene(ui->title_entranceComboBox);
@@ -65,6 +118,11 @@ void GameConfig::initTitleTab()
     bindFileOpenWithLineEdit(ui->title_button_music,ui->title_lineEdit_music);
     bindFileOpenWithLineEdit(ui->title_button_about,ui->title_lineEdit_about);
 
+
+}
+
+void GameConfig::saveDataOfTitleTab()
+{
 
 }
 

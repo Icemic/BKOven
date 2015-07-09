@@ -26,7 +26,11 @@ private:
 
     void fillComboBoxWithScene(QComboBox* comboBox);
 
+    void initBaseTab();
+    void saveDataOfBaseTab();
+    void loadDataOfBaseTab();
     void initTitleTab();
+    void saveDataOfTitleTab();
     void loadDataOfTitleTab();
 };
 

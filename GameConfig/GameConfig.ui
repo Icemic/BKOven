@@ -52,7 +52,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit"/>
+           <widget class="QLineEdit" name="base_lineEdit_game"/>
           </item>
          </layout>
         </item>
@@ -72,7 +72,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit_2"/>
+           <widget class="QLineEdit" name="base_lineEdit_author"/>
           </item>
          </layout>
         </item>
@@ -84,7 +84,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPlainTextEdit" name="plainTextEdit"/>
+         <widget class="QPlainTextEdit" name="base_plainTextEdit_staff"/>
         </item>
         <item>
          <widget class="QLabel" name="label_4">
@@ -94,7 +94,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPlainTextEdit" name="plainTextEdit_2"/>
+         <widget class="QPlainTextEdit" name="base_plainTextEdit_copyright"/>
         </item>
        </layout>
       </widget>
@@ -102,7 +102,7 @@
        <property name="geometry">
         <rect>
          <x>280</x>
-         <y>20</y>
+         <y>10</y>
          <width>206</width>
          <height>81</height>
         </rect>
@@ -112,21 +112,24 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <widget class="QComboBox" name="comboBox"/>
+         <widget class="QComboBox" name="base_comboBox_entrance"/>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
-           <widget class="QRadioButton" name="radioButton">
+           <widget class="QRadioButton" name="base_radioButton_fullScreen">
             <property name="text">
              <string>全屏幕</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="radioButton_2">
+           <widget class="QRadioButton" name="base_radioButton_window">
             <property name="text">
              <string>窗口</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
