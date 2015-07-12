@@ -6,7 +6,6 @@
 PreviewWidget::PreviewWidget(int w, int h, const QString &projectPath,QWidget* parent):
     QGraphicsView(parent)
 {
-//    this->set
     this->w = w;
     this->h = h;
     this->projectPath = projectPath;
@@ -52,6 +51,18 @@ void PreviewWidget::resizeEvent(QResizeEvent *e)
     QGraphicsView::resizeEvent(e);
     fitInView(0,0,scene->width(),scene->height(),Qt::KeepAspectRatio);
     e->accept();
+}
+
+void PreviewWidget::setSize(int w, int h)
+{
+    this->w = w;
+    this->h = h;
+    scene->setSceneRect(0,0,w,h);
+}
+
+void PreviewWidget::setProjectPath(const QString &projectPath)
+{
+    this->projectPath = projectPath;
 }
 
 void PreviewWidget::setBackgroundImage(const QString &filename)

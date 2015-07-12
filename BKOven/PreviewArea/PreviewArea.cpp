@@ -18,13 +18,24 @@ void PreviewArea::test()
     qDebug() << "PreviewArea: ok!" << endl;
 }
 
-void PreviewArea::init(const QString &projectPath, int w, int h)
+void PreviewArea::init()
+{
+    if(_widget==nullptr)
+    {
+        _widget = new PreviewWidget(800,600);
+    }
+    _widget->clear();
+}
+
+void PreviewArea::open(const QString &projectPath, int w, int h)
 {
     PreviewArea::projectPath = projectPath;
     if(_widget==nullptr)
     {
         _widget = new PreviewWidget(w,h,projectPath);
     }
+    _widget->setSize(w,h);
+    _widget->setProjectPath(projectPath);
     _widget->clear();
 }
 

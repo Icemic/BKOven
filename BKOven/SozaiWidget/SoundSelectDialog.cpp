@@ -59,7 +59,7 @@ SoundSelectDialog::SoundSelectDialog(QWidget *parent) :
             //加载子节点
             this->_load();
         }
-        else{
+        else if(item->data(Qt::UserRole).toInt()==1){
             if(this->playingRow==this->row(item)){  //双击正在播放的项目
                 playingRow = -1;
                 item->setIcon(QIcon(":/Sound/stop.png"));
@@ -68,13 +68,16 @@ SoundSelectDialog::SoundSelectDialog(QWidget *parent) :
                 playingRow = this->row(item);
                 item->setIcon(QIcon(":/Sound/play.png"));
                 QBKAudio::getInstance()->playSound(projectPath+"/Data/"+resourceFolder+"/"+item->data(Qt::UserRole+1).toString(),1,100,-1,false,false);
-            }else{  //又在播放的项目，双击的不是该项目
+            }else{  //有在播放的项目，双击的不是该项目
                 this->item(playingRow)->setIcon(QIcon(":/Sound/stop.png"));
                 playingRow = this->row(item);
                 item->setIcon(QIcon(":/Sound/play.png"));
                 QBKAudio::getInstance()->stop(1);
                 QBKAudio::getInstance()->playSound(projectPath+"/Data/"+resourceFolder+"/"+item->data(Qt::UserRole+1).toString(),1,100,-1,false,false);
             }
+        }
+        else{ //if(item-data(Qt::UserRole).toInt()==2)
+
         }
 
 
@@ -140,7 +143,7 @@ void SoundSelectDialog::_load()
             item->setData(Qt::UserRole+1,ite.value().toString());   //文件路径
             QFile f(projectPath+"/Data/"+resourceFolder+"/"+ite.value().toString());
             //是否为占位文件
-            if(f.exists()){
+            if(f.exists()&&!ite.value().toString().isEmpty()){
                 item->setData(Qt::UserRole,1);  //0-folder 1-file 2-voidfile
                 item->setIcon(QIcon(":/Sound/stop"));
             }

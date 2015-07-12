@@ -109,7 +109,7 @@ MainWindow::MainWindow(QWidget *parent) :
     SozaiWidget::init();
     StageWidget::init();
     ScriptWidget::init();
-    PreviewArea::init("D:/workspace/Git/BKOven测试/test",1280,720);
+    PreviewArea::init();
 
 
 //    QWidget* widget = new QWidget();
@@ -127,7 +127,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ScriptGenerator::init();
 #ifdef QT_DEBUG
-    this->openProject("D:/workspace/Git/BKOven测试/test");
+    this->openProject("C:/workspace/BKOven测试/test");
 #endif
 
 }
@@ -147,6 +147,7 @@ void MainWindow::openProject(const QString &projectPath)
 
     SozaiWidget::open(projectPath);
     ScriptWidget::open(projectPath);
+    PreviewArea::open(projectPath,1280,720);
 
 //    ui->mainToolBar->setEnabled(true);
 }

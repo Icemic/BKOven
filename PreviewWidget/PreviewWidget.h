@@ -13,8 +13,11 @@ class PREVIEWWIDGETSHARED_EXPORT PreviewWidget: public QGraphicsView
 {
     Q_OBJECT
 public:
-    explicit PreviewWidget(int w, int h, const QString &projectPath, QWidget *parent=0);
+    explicit PreviewWidget(int w, int h, const QString &projectPath="", QWidget *parent=0);
     ~PreviewWidget();
+
+    void setSize(int w, int h);
+    void setProjectPath(const QString &projectPath);
 
     void setBackgroundImage(const QString &filename);
     void setCharacterImage(const QString &filename, int position);
