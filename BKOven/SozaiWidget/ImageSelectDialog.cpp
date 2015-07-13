@@ -24,6 +24,10 @@ ImageSelectDialog::ImageSelectDialog(QWidget *parent) :
     this->setUniformItemSizes(true);
     this->setResizeMode(QListView::Adjust);
     this->setMinimumHeight(420);
+    this->setWrapping(true);
+    this->setFlow(QListWidget::LeftToRight);
+    this->setMovement(QListWidget::Static);
+    this->setDragDropMode(QListWidget::DragOnly);
     //设置预览窗口
     preview = new QWidget();
     preview->move(0,0);
