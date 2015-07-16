@@ -107,9 +107,20 @@ void GameConfig::initTitleTab()
         });
     };
 
+    auto bindCheckboxWithButtons = [=](QCheckBox* checkbox, QList<QWidget*> widgets){
+        checkbox->setChecked(true);
+        connect(checkbox,&QCheckBox::stateChanged,[=](int state){
+            foreach(QWidget* widget, widgets)
+            {
+                widget->setDisabled(!state);
+            }
+        });
+    };
+
     bindFileOpenWithLineEdit(ui->title_button_bgm,ui->title_lineEdit_bgm);
     bindFileOpenWithLineEdit(ui->title_button_touchSe,ui->title_lineEdit_touchSe);
     bindFileOpenWithLineEdit(ui->title_button_hoverSe,ui->title_lineEdit_hoverSe);
+    bindFileOpenWithLineEdit(ui->title_button_bg,ui->title_lineEdit_bg);
     bindFileOpenWithLineEdit(ui->title_button_start,ui->title_lineEdit_start);
     bindFileOpenWithLineEdit(ui->title_button_load,ui->title_lineEdit_load);
     bindFileOpenWithLineEdit(ui->title_button_config,ui->title_lineEdit_config);
@@ -117,6 +128,15 @@ void GameConfig::initTitleTab()
     bindFileOpenWithLineEdit(ui->title_button_cg,ui->title_lineEdit_cg);
     bindFileOpenWithLineEdit(ui->title_button_music,ui->title_lineEdit_music);
     bindFileOpenWithLineEdit(ui->title_button_about,ui->title_lineEdit_about);
+
+    bindCheckboxWithButtons(ui->title_checkBox_bg,{ui->title_button_bg,ui->title_button_condition_bg});
+    bindCheckboxWithButtons(ui->title_checkBox_start,{ui->title_button_start,ui->title_button_condition_start});
+    bindCheckboxWithButtons(ui->title_checkBox_load,{ui->title_button_load,ui->title_button_condition_load});
+    bindCheckboxWithButtons(ui->title_checkBox_config,{ui->title_button_config,ui->title_button_condition_config});
+    bindCheckboxWithButtons(ui->title_checkBox_exit,{ui->title_button_exit,ui->title_button_condition_exit});
+    bindCheckboxWithButtons(ui->title_checkBox_cg,{ui->title_button_cg,ui->title_button_condition_cg});
+    bindCheckboxWithButtons(ui->title_checkBox_music,{ui->title_button_music,ui->title_button_condition_music});
+    bindCheckboxWithButtons(ui->title_checkBox_about,{ui->title_button_about,ui->title_button_condition_about});
 
 
 }
@@ -131,6 +151,7 @@ void GameConfig::loadDataOfTitleTab()
 
 }
 
+//公共函数
 void GameConfig::fillComboBoxWithScene(QComboBox *comboBox)
 {
     if(actAndSceneDoc.isNull())

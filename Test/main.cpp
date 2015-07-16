@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 //    });
 
     GameConfig g;
-    g.execWithPath("D:/workspace/Git/BKOven测试/test");
+    g.execWithPath("C:/workspace/BKOven测试/test");
 
 
     return 0;//a.exec();

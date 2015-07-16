@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1053</width>
-    <height>576</height>
+    <height>560</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -148,7 +148,7 @@
          <x>10</x>
          <y>10</y>
          <width>241</width>
-         <height>104</height>
+         <height>101</height>
         </rect>
        </property>
        <property name="title">
@@ -229,9 +229,9 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>120</y>
+         <y>117</y>
          <width>241</width>
-         <height>131</height>
+         <height>111</height>
         </rect>
        </property>
        <property name="title">
@@ -391,15 +391,71 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>250</y>
+         <y>233</y>
          <width>361</width>
-         <height>246</height>
+         <height>251</height>
         </rect>
        </property>
        <property name="title">
-        <string>按钮</string>
+        <string>图像</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_10">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QCheckBox" name="title_checkBox_bg">
+            <property name="minimumSize">
+             <size>
+              <width>70</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>背景图片</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="title_lineEdit_bg">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="title_button_bg">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>26</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="title_button_condition_bg">
+            <property name="text">
+             <string>显示条件：无</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_9">
           <property name="spacing">
@@ -800,7 +856,7 @@
          <x>380</x>
          <y>16</y>
          <width>640</width>
-         <height>480</height>
+         <height>467</height>
         </rect>
        </property>
        <property name="sizePolicy">
@@ -810,36 +866,13 @@
         </sizepolicy>
        </property>
       </widget>
-      <widget class="QListWidget" name="title_uiType">
-       <property name="geometry">
-        <rect>
-         <x>260</x>
-         <y>16</y>
-         <width>111</width>
-         <height>61</height>
-        </rect>
-       </property>
-       <property name="currentRow">
-        <number>0</number>
-       </property>
-       <item>
-        <property name="text">
-         <string>桌面设备界面</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>移动触屏界面</string>
-        </property>
-       </item>
-      </widget>
       <widget class="QGroupBox" name="groupBox_6">
        <property name="geometry">
         <rect>
          <x>260</x>
-         <y>120</y>
+         <y>117</y>
          <width>111</width>
-         <height>114</height>
+         <height>111</height>
         </rect>
        </property>
        <property name="title">
