@@ -10,11 +10,16 @@ GameConfig::GameConfig(QWidget *parent) :
     ui->setupUi(this);
 
     connect(this,&QDialog::accepted,[=](){
-        qDebug() << "sdsdf";
         QDir dir(projectPath);
         dir.mkpath("config/ui");
         saveDataOfBaseTab();
     });
+
+
+    //test
+
+
+
 }
 
 GameConfig::~GameConfig()
@@ -84,6 +89,9 @@ void GameConfig::loadDataOfBaseTab()
 //标题画面选项卡
 void GameConfig::initTitleTab()
 {
+    //ui->title_preview->setSceneRect(ui->title_preview->rect());
+    ui->title_preview->setProjectPath(this->projectPath);
+
     fillComboBoxWithScene(ui->title_entranceComboBox);
     fillComboBoxWithScene(ui->title_firstEnterComboBox);
 
@@ -107,15 +115,24 @@ void GameConfig::initTitleTab()
         });
     };
 
-    auto bindCheckboxWithButtons = [=](QCheckBox* checkbox, QList<QWidget*> widgets){
-        checkbox->setChecked(true);
+    auto bindCheckboxWithButtons = [=](QCheckBox* checkbox, QList<QWidget*> widgets, bool isChecked){
         connect(checkbox,&QCheckBox::stateChanged,[=](int state){
             foreach(QWidget* widget, widgets)
             {
                 widget->setDisabled(!state);
             }
         });
+        checkbox->setChecked(isChecked);
+        if(!isChecked)
+        {
+            foreach(QWidget* widget, widgets)
+            {
+                widget->setDisabled(1);
+            }
+        }
     };
+
+
 
     bindFileOpenWithLineEdit(ui->title_button_bgm,ui->title_lineEdit_bgm);
     bindFileOpenWithLineEdit(ui->title_button_touchSe,ui->title_lineEdit_touchSe);
@@ -129,15 +146,76 @@ void GameConfig::initTitleTab()
     bindFileOpenWithLineEdit(ui->title_button_music,ui->title_lineEdit_music);
     bindFileOpenWithLineEdit(ui->title_button_about,ui->title_lineEdit_about);
 
-    bindCheckboxWithButtons(ui->title_checkBox_bg,{ui->title_button_bg,ui->title_button_condition_bg});
-    bindCheckboxWithButtons(ui->title_checkBox_start,{ui->title_button_start,ui->title_button_condition_start});
-    bindCheckboxWithButtons(ui->title_checkBox_load,{ui->title_button_load,ui->title_button_condition_load});
-    bindCheckboxWithButtons(ui->title_checkBox_config,{ui->title_button_config,ui->title_button_condition_config});
-    bindCheckboxWithButtons(ui->title_checkBox_exit,{ui->title_button_exit,ui->title_button_condition_exit});
-    bindCheckboxWithButtons(ui->title_checkBox_cg,{ui->title_button_cg,ui->title_button_condition_cg});
-    bindCheckboxWithButtons(ui->title_checkBox_music,{ui->title_button_music,ui->title_button_condition_music});
-    bindCheckboxWithButtons(ui->title_checkBox_about,{ui->title_button_about,ui->title_button_condition_about});
+    bindCheckboxWithButtons(ui->title_checkBox_bg,{ui->title_button_bg,ui->title_button_condition_bg},false);
+    bindCheckboxWithButtons(ui->title_checkBox_start,{ui->title_button_start,ui->title_button_condition_start},true);
+    bindCheckboxWithButtons(ui->title_checkBox_load,{ui->title_button_load,ui->title_button_condition_load},true);
+    bindCheckboxWithButtons(ui->title_checkBox_config,{ui->title_button_config,ui->title_button_condition_config},true);
+    bindCheckboxWithButtons(ui->title_checkBox_exit,{ui->title_button_exit,ui->title_button_condition_exit},true);
+    bindCheckboxWithButtons(ui->title_checkBox_cg,{ui->title_button_cg,ui->title_button_condition_cg},false);
+    bindCheckboxWithButtons(ui->title_checkBox_music,{ui->title_button_music,ui->title_button_condition_music},false);
+    bindCheckboxWithButtons(ui->title_checkBox_about,{ui->title_button_about,ui->title_button_condition_about},false);
 
+
+    connect(ui->title_checkBox_bg,&QCheckBox::toggled,[=](bool checked){
+        if(checked)
+            emit ui->title_lineEdit_bg->textChanged(ui->title_lineEdit_bg->text());
+    });
+    connect(ui->title_checkBox_start,&QCheckBox::toggled,[=](bool checked){
+        if(checked)
+            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_start->text(),50,50);
+        else
+            ui->title_preview->removeItemImage("ui/"+ui->title_lineEdit_start->text());
+    });
+    connect(ui->title_checkBox_load,&QCheckBox::toggled,[=](bool checked){
+        if(checked)
+            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_load->text(),50,50);
+        else
+            ui->title_preview->removeItemImage("ui/"+ui->title_lineEdit_load->text());
+    });
+    connect(ui->title_checkBox_config,&QCheckBox::toggled,[=](bool checked){
+        if(checked)
+            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_config->text(),50,50);
+        else
+            ui->title_preview->removeItemImage("ui/"+ui->title_lineEdit_config->text());
+    });
+    connect(ui->title_checkBox_exit,&QCheckBox::toggled,[=](bool checked){
+        if(checked)
+            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_exit->text(),50,50);
+        else
+            ui->title_preview->removeItemImage("ui/"+ui->title_lineEdit_exit->text());
+    });
+    connect(ui->title_checkBox_cg,&QCheckBox::toggled,[=](bool checked){
+        if(checked)
+            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_cg->text(),50,50);
+        else
+            ui->title_preview->removeItemImage("ui/"+ui->title_lineEdit_cg->text());
+    });
+    connect(ui->title_checkBox_music,&QCheckBox::toggled,[=](bool checked){
+        if(checked)
+            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_music->text(),50,50);
+        else
+            ui->title_preview->removeItemImage("ui/"+ui->title_lineEdit_music->text());
+    });
+    connect(ui->title_checkBox_about,&QCheckBox::toggled,[=](bool checked){
+        if(checked)
+            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_about->text(),50,50);
+        else
+            ui->title_preview->removeItemImage("ui/"+ui->title_lineEdit_about->text());
+    });
+
+
+    connect(ui->title_lineEdit_bg,&QLineEdit::textChanged,[=](const QString &text){
+        if(text.isEmpty())
+            ui->title_preview->removeBackgroundImage();
+        else
+            ui->title_preview->setBackgroundImage("ui/"+ui->title_lineEdit_bg->text());
+    });
+    connect(ui->title_lineEdit_start,&QLineEdit::textChanged,[=](const QString &text){
+        if(text.isEmpty())
+            ui->title_preview->removeItemImage(text);
+        else
+            ui->title_preview->setBackgroundImage("ui/"+ui->title_lineEdit_start->text());
+    });
 
 }
 

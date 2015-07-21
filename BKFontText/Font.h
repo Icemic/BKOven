@@ -1,13 +1,13 @@
 ﻿#pragma once
 
 #include "Common.h"
-#include <ft2build.h>
-#include <freetype/freetype.h>
-#include <freetype/ftoutln.h>
-#include <freetype/ftstroke.h>
-#include <freetype/ftglyph.h>
-#include <freetype/ttnameid.h>
-#include <freetype/ftsystem.h>
+#include "ft2build.h"
+#include "freetype/freetype.h"
+#include "freetype/ftoutln.h"
+#include "freetype/ftstroke.h"
+#include "freetype/ftglyph.h"
+#include "freetype/ttnameid.h"
+#include "freetype/ftsystem.h"
 
 #include "BasicCache.h"
 #include "CCObject.h"

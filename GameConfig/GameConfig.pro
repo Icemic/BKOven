@@ -30,3 +30,10 @@ else:unix: LIBS += -L$$OUT_PWD/../ParserHelper/ -lParserHelper
 
 INCLUDEPATH += $$PWD/../ParserHelper
 DEPENDPATH += $$PWD/../ParserHelper
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../PreviewWidget/release/ -lPreviewWidget
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../PreviewWidget/debug/ -lPreviewWidget
+else:unix: LIBS += -L$$OUT_PWD/../PreviewWidget/ -lPreviewWidget
+
+INCLUDEPATH += $$PWD/../PreviewWidget
+DEPENDPATH += $$PWD/../PreviewWidget

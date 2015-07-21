@@ -850,7 +850,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QGraphicsView" name="graphicsView">
+      <widget class="PreviewWidget" name="title_preview">
        <property name="geometry">
         <rect>
          <x>380</x>
@@ -916,6 +916,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PreviewWidget</class>
+   <extends>QGraphicsView</extends>
+   <header>../PreviewWidget/PreviewWidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

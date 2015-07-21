@@ -15,8 +15,10 @@ PreviewWidget::PreviewWidget(int w, int h, const QString &projectPath,QWidget* p
     QOpenGLWidget *glWidget = new QOpenGLWidget();
     this->setViewport(glWidget);
 
+    QPixmap pixmap(10,10);
+    pixmap.fill(Qt::red);
 
-    backgroundItem = new QGraphicsPixmapItem();
+    backgroundItem = new QGraphicsPixmapItem(pixmap);
     backgroundItem->setZValue(0);
 
     textWindowItem = new QGraphicsPixmapItem();
@@ -38,6 +40,11 @@ PreviewWidget::PreviewWidget(int w, int h, const QString &projectPath,QWidget* p
         emit itemMoved(type, filename, x, y);
     });
 
+}
+
+PreviewWidget::PreviewWidget(QWidget* parent)
+{
+    PreviewWidget::PreviewWidget(500,300,"",parent);
 }
 
 PreviewWidget::~PreviewWidget()
@@ -67,11 +74,15 @@ void PreviewWidget::setProjectPath(const QString &projectPath)
 
 void PreviewWidget::setBackgroundImage(const QString &filename)
 {
-    backgroundItem->setPixmap(QPixmap(projectPath+"/Data/"+filename));
-    if(backgroundItem->scene()==nullptr)
-        scene->addItem(backgroundItem);
-    backgroundItem->setData(0,"background");
-    backgroundItem->setData(1,filename);
+    QFileInfo fileInfo(projectPath+"/Data/"+filename);
+    if(fileInfo.isFile())
+    {
+        backgroundItem->setPixmap(QPixmap(fileInfo.absoluteFilePath()));
+        if(backgroundItem->scene()==nullptr)
+            scene->addItem(backgroundItem);
+        backgroundItem->setData(0,"background");
+        backgroundItem->setData(1,filename);
+    }
 }
 
 void PreviewWidget::setCharacterImage(const QString &filename, int position)
@@ -126,7 +137,12 @@ void PreviewWidget::setItemImage(const QString &filename, int x, int y)
 
 void PreviewWidget::removeBackgroundImage()
 {
-    scene->removeItem(backgroundItem);
+    qDebug() << backgroundItem->scene();
+    if(backgroundItem->scene()!=nullptr){
+        scene->removeItem(backgroundItem);
+    }else{
+        qWarning() << "Warning: null backgroundItem";
+    }
 }
 
 void PreviewWidget::removeCharacterImage(const QString &filename)
@@ -135,6 +151,9 @@ void PreviewWidget::removeCharacterImage(const QString &filename)
     {
         QGraphicsPixmapItem* item = characterItems.value(filename);
         scene->removeItem(item);
+        item = nullptr;
+    }else{
+        qWarning() << "Warning: characterItem "+filename+" not found";
     }
 }
 
@@ -144,6 +163,8 @@ void PreviewWidget::removeItemImage(const QString &filename)
     {
         QGraphicsPixmapItem* item = itemItems.value(filename);
         scene->removeItem(item);
+    }else{
+        qWarning() << "Warning: itemItem "+filename+" not found";
     }
 }
 
