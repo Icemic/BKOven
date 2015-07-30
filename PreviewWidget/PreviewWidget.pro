@@ -29,3 +29,5 @@ else:unix: LIBS += -L$$OUT_PWD/../BKFontText/ -lBKFontText
 
 INCLUDEPATH += $$PWD/../BKFontText
 DEPENDPATH += $$PWD/../BKFontText
+
+CONFIG += c++11

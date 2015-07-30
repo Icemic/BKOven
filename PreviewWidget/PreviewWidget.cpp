@@ -15,11 +15,11 @@ PreviewWidget::PreviewWidget(int w, int h, const QString &projectPath,QWidget* p
     QOpenGLWidget *glWidget = new QOpenGLWidget();
     this->setViewport(glWidget);
 
-    QPixmap pixmap(10,10);
-    pixmap.fill(Qt::red);
 
-    backgroundItem = new QGraphicsPixmapItem(pixmap);
+    backgroundItem = new QGraphicsPixmapItem();
     backgroundItem->setZValue(0);
+
+    scene->addItem(backgroundItem);
 
     textWindowItem = new QGraphicsPixmapItem();
     textWindowItem->setZValue(2000);
@@ -40,11 +40,6 @@ PreviewWidget::PreviewWidget(int w, int h, const QString &projectPath,QWidget* p
         emit itemMoved(type, filename, x, y);
     });
 
-}
-
-PreviewWidget::PreviewWidget(QWidget* parent)
-{
-    PreviewWidget::PreviewWidget(500,300,"",parent);
 }
 
 PreviewWidget::~PreviewWidget()
@@ -137,7 +132,6 @@ void PreviewWidget::setItemImage(const QString &filename, int x, int y)
 
 void PreviewWidget::removeBackgroundImage()
 {
-    qDebug() << backgroundItem->scene();
     if(backgroundItem->scene()!=nullptr){
         scene->removeItem(backgroundItem);
     }else{
@@ -193,7 +187,7 @@ void PreviewWidget::setNameBoxTextPos(int rx, int ry)
 void PreviewWidget::renderTextWindowText(const QString &text, int w, int h)
 {
     static QColor transparentColor(0,0,0,0);
-    QPixmap &origin = BKFontText::getInstance()->render(text,"PreviewWidget_textwindowtext",w,h);
+    QPixmap origin = BKFontText::getInstance()->render(text,"PreviewWidget_textwindowtext",w,h);
     QPixmap output(w>0?w:origin.width(),h>0?h:origin.height());
     output.fill(transparentColor);
     QPainter painter(&output);
@@ -204,7 +198,7 @@ void PreviewWidget::renderTextWindowText(const QString &text, int w, int h)
 void PreviewWidget::renderNameBoxText(const QString &text, int w, int h)
 {
     static QColor transparentColor(0,0,0,0);
-    QPixmap &origin = BKFontText::getInstance()->render(text,"PreviewWidget_nameBoxtext",w,h);
+    QPixmap origin = BKFontText::getInstance()->render(text,"PreviewWidget_nameBoxtext",w,h);
     QPixmap output(w>0?w:origin.width(),h>0?h:origin.height());
     output.fill(transparentColor);
     QPainter painter(&output);

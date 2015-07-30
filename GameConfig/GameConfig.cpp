@@ -59,6 +59,9 @@ void GameConfig::saveDataOfBaseTab()
     doc.insert("staff",ui->base_plainTextEdit_staff->toPlainText());
     doc.insert("copyright",ui->base_plainTextEdit_copyright->toPlainText());
     doc.insert("entrance",ui->base_comboBox_entrance->currentText());    //禁止/字符
+    QStringList size = ui->base_comboBox_size->currentText().split("*");
+    doc.insert("sizeW",size[0]);
+    doc.insert("sizeH",size[1]);
     doc.insert("mode",ui->base_radioButton_window->isChecked()?"window":"fullscreen");
 
     QFile file(projectPath+"/config/ui/base.bkpsr");
@@ -81,6 +84,7 @@ void GameConfig::loadDataOfBaseTab()
     ui->base_plainTextEdit_staff->setPlainText(doc.value("staff").toString());
     ui->base_plainTextEdit_copyright->setPlainText(doc.value("copyright").toString());
     ui->base_comboBox_entrance->setCurrentText(doc.value("entrance").toString());
+    ui->base_comboBox_size->setCurrentText(doc.value("sizeW").toString()+"*"+doc.value("sizeH").toString());
     ui->base_radioButton_fullScreen->setChecked(doc.value("mode").toString()=="fullscreen");
     ui->base_radioButton_window->setChecked(doc.value("mode").toString()=="window");
 
@@ -91,11 +95,13 @@ void GameConfig::initTitleTab()
 {
     //ui->title_preview->setSceneRect(ui->title_preview->rect());
     ui->title_preview->setProjectPath(this->projectPath);
+    QStringList size = ui->base_comboBox_size->currentText().split("*");
+    ui->title_preview->setSize(size[0].toInt(),size[1].toInt());
 
     fillComboBoxWithScene(ui->title_entranceComboBox);
     fillComboBoxWithScene(ui->title_firstEnterComboBox);
 
-    auto bindFileOpenWithLineEdit = [=](QPushButton* button,QLineEdit* lineedit){
+    auto bindFileOpenWithLineEdit = [=](QPushButton* button,QLineEditEx* lineedit){
         lineedit->setDisabled(true);
         connect(button,&QPushButton::clicked,[=](){
             for(;;)
@@ -158,63 +164,118 @@ void GameConfig::initTitleTab()
 
     connect(ui->title_checkBox_bg,&QCheckBox::toggled,[=](bool checked){
         if(checked)
-            emit ui->title_lineEdit_bg->textChanged(ui->title_lineEdit_bg->text());
+            ui->title_preview->setBackgroundImage("ui/"+ui->title_lineEdit_bg->text());
+        else
+            ui->title_preview->removeBackgroundImage();
     });
     connect(ui->title_checkBox_start,&QCheckBox::toggled,[=](bool checked){
         if(checked)
-            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_start->text(),50,50);
+            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_start->text(),10,10);
         else
             ui->title_preview->removeItemImage("ui/"+ui->title_lineEdit_start->text());
     });
     connect(ui->title_checkBox_load,&QCheckBox::toggled,[=](bool checked){
         if(checked)
-            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_load->text(),50,50);
+            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_load->text(),10,10);
         else
             ui->title_preview->removeItemImage("ui/"+ui->title_lineEdit_load->text());
     });
     connect(ui->title_checkBox_config,&QCheckBox::toggled,[=](bool checked){
         if(checked)
-            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_config->text(),50,50);
+            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_config->text(),10,10);
         else
             ui->title_preview->removeItemImage("ui/"+ui->title_lineEdit_config->text());
     });
     connect(ui->title_checkBox_exit,&QCheckBox::toggled,[=](bool checked){
         if(checked)
-            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_exit->text(),50,50);
+            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_exit->text(),10,10);
         else
             ui->title_preview->removeItemImage("ui/"+ui->title_lineEdit_exit->text());
     });
     connect(ui->title_checkBox_cg,&QCheckBox::toggled,[=](bool checked){
         if(checked)
-            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_cg->text(),50,50);
+            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_cg->text(),10,10);
         else
             ui->title_preview->removeItemImage("ui/"+ui->title_lineEdit_cg->text());
     });
     connect(ui->title_checkBox_music,&QCheckBox::toggled,[=](bool checked){
         if(checked)
-            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_music->text(),50,50);
+            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_music->text(),10,10);
         else
             ui->title_preview->removeItemImage("ui/"+ui->title_lineEdit_music->text());
     });
     connect(ui->title_checkBox_about,&QCheckBox::toggled,[=](bool checked){
         if(checked)
-            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_about->text(),50,50);
+            ui->title_preview->setItemImage("ui/"+ui->title_lineEdit_about->text(),10,10);
         else
             ui->title_preview->removeItemImage("ui/"+ui->title_lineEdit_about->text());
     });
 
 
-    connect(ui->title_lineEdit_bg,&QLineEdit::textChanged,[=](const QString &text){
-        if(text.isEmpty())
+    connect(ui->title_lineEdit_bg,&QLineEditEx::textWillChange,[=](const QString &prev, const QString &next){
             ui->title_preview->removeBackgroundImage();
-        else
-            ui->title_preview->setBackgroundImage("ui/"+ui->title_lineEdit_bg->text());
+            ui->title_preview->setBackgroundImage("ui/"+next);
     });
-    connect(ui->title_lineEdit_start,&QLineEdit::textChanged,[=](const QString &text){
-        if(text.isEmpty())
-            ui->title_preview->removeItemImage(text);
+    connect(ui->title_lineEdit_start,&QLineEditEx::textWillChange,[=](const QString &prev, const QString &next){
+            ui->title_preview->removeItemImage("ui/"+prev);
+            ui->title_preview->setItemImage("ui/"+next,10,10);
+    });
+    connect(ui->title_lineEdit_load,&QLineEditEx::textWillChange,[=](const QString &prev, const QString &next){
+            ui->title_preview->removeItemImage("ui/"+prev);
+            ui->title_preview->setItemImage("ui/"+next,10,10);
+    });
+    connect(ui->title_lineEdit_config,&QLineEditEx::textWillChange,[=](const QString &prev, const QString &next){
+            ui->title_preview->removeItemImage("ui/"+prev);
+            ui->title_preview->setItemImage("ui/"+next,10,10);
+    });
+    connect(ui->title_lineEdit_exit,&QLineEditEx::textWillChange,[=](const QString &prev, const QString &next){
+            ui->title_preview->removeItemImage("ui/"+prev);
+            ui->title_preview->setItemImage("ui/"+next,10,10);
+    });
+    connect(ui->title_lineEdit_cg,&QLineEditEx::textWillChange,[=](const QString &prev, const QString &next){
+            ui->title_preview->removeItemImage("ui/"+prev);
+            ui->title_preview->setItemImage("ui/"+next,10,10);
+    });
+    connect(ui->title_lineEdit_music,&QLineEditEx::textWillChange,[=](const QString &prev, const QString &next){
+            ui->title_preview->removeItemImage("ui/"+prev);
+            ui->title_preview->setItemImage("ui/"+next,10,10);
+    });
+    connect(ui->title_lineEdit_about,&QLineEditEx::textWillChange,[=](const QString &prev, const QString &next){
+            ui->title_preview->removeItemImage("ui/"+prev);
+            ui->title_preview->setItemImage("ui/"+next,10,10);
+    });
+
+
+
+    connect(ui->title_preview,&PreviewWidget::itemMoved,[=](const QString &type, const QString &filename, int x, int y){
+        static QLineEditEx* lineEditList[] = {
+            ui->title_lineEdit_bg,
+            ui->title_lineEdit_start,
+            ui->title_lineEdit_load,
+            ui->title_lineEdit_config,
+            ui->title_lineEdit_exit,
+            ui->title_lineEdit_cg,
+            ui->title_lineEdit_music,
+            ui->title_lineEdit_about
+        };
+        QLineEditEx* result;
+        for(QLineEditEx* lineedit : lineEditList)
+        {
+            if(("ui/"+lineedit->text())==filename)
+            {
+                result = lineedit;
+                break;
+            }
+        }
+        if(result!=nullptr)
+        {
+            result->setExtraData("posX",x);
+            result->setExtraData("posY",y);
+            ui->title_spinBox_x->setValue(x);
+            ui->title_spinBox_y->setValue(y);
+        }
         else
-            ui->title_preview->setBackgroundImage("ui/"+ui->title_lineEdit_start->text());
+            qWarning() << "Warning: LineEditEx for \'"+filename+"\' not found." << endl;
     });
 
 }

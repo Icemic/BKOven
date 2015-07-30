@@ -103,8 +103,8 @@
         <rect>
          <x>280</x>
          <y>10</y>
-         <width>206</width>
-         <height>81</height>
+         <width>241</width>
+         <height>111</height>
         </rect>
        </property>
        <property name="title">
@@ -112,7 +112,79 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <widget class="QComboBox" name="base_comboBox_entrance"/>
+         <layout class="QHBoxLayout" name="horizontalLayout_12">
+          <item>
+           <widget class="QLabel" name="label_12">
+            <property name="minimumSize">
+             <size>
+              <width>50</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="sizeIncrement">
+             <size>
+              <width>50</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>分辨率</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="base_comboBox_size">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <item>
+             <property name="text">
+              <string>1280*720</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>1024*576</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>800*600</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_11">
+          <item>
+           <widget class="QLabel" name="label_13">
+            <property name="minimumSize">
+             <size>
+              <width>50</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Logo画面</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="base_comboBox_entrance">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -257,7 +329,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="title_lineEdit_bgm">
+           <widget class="QLineEditEx" name="title_lineEdit_bgm">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -306,7 +378,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="title_lineEdit_touchSe">
+           <widget class="QLineEditEx" name="title_lineEdit_touchSe">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -355,7 +427,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="title_lineEdit_hoverSe">
+           <widget class="QLineEditEx" name="title_lineEdit_hoverSe">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -419,7 +491,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="title_lineEdit_bg">
+           <widget class="QLineEditEx" name="title_lineEdit_bg">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -475,7 +547,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="title_lineEdit_start">
+           <widget class="QLineEditEx" name="title_lineEdit_start">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -531,7 +603,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="title_lineEdit_load">
+           <widget class="QLineEditEx" name="title_lineEdit_load">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -587,7 +659,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="title_lineEdit_config">
+           <widget class="QLineEditEx" name="title_lineEdit_config">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -643,7 +715,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="title_lineEdit_exit">
+           <widget class="QLineEditEx" name="title_lineEdit_exit">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -699,7 +771,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="title_lineEdit_cg">
+           <widget class="QLineEditEx" name="title_lineEdit_cg">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -755,7 +827,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="title_lineEdit_music">
+           <widget class="QLineEditEx" name="title_lineEdit_music">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -811,7 +883,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="title_lineEdit_about">
+           <widget class="QLineEditEx" name="title_lineEdit_about">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -887,7 +959,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="title_spinBox_x"/>
+         <widget class="QSpinBox" name="title_spinBox_x">
+          <property name="maximum">
+           <number>100000</number>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QLabel" name="label_11">
@@ -897,7 +973,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="title_spinBox_y"/>
+         <widget class="QSpinBox" name="title_spinBox_y">
+          <property name="maximum">
+           <number>100000</number>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -921,6 +1001,11 @@
    <class>PreviewWidget</class>
    <extends>QGraphicsView</extends>
    <header>../PreviewWidget/PreviewWidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QLineEditEx</class>
+   <extends>QLineEdit</extends>
+   <header>extend/QLineEditEx.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

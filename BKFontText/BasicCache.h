@@ -147,7 +147,9 @@ public:
 	}
 
 	BKE_BasicCache() :time(0), _limit(-1), _nowsize(0), _caller(NULL) {
-		static_assert(std::is_convertible<_Content, CCObject *>::value, "");
+#ifndef MINGW_SDK_INIT
+        static_assert(std::is_convertible<_Content, QObject *>::value, "");
+#endif
 	}
 	~BKE_BasicCache(){
 		_Iterator i = _K2S.begin();

@@ -12,9 +12,11 @@ CONFIG += staticlib
 
 SOURCES += \
     GameConfig.cpp \
+    extend/QLineEditEx.cpp
 
 HEADERS += \
     GameConfig.h \
+    extend/QLineEditEx.h
 
 unix {
     target.path = /usr/lib
